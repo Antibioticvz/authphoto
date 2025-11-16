@@ -40,7 +40,10 @@ export class LoggerService implements NestLoggerService {
   log(message: string, context?: string): void;
   log(level: LogLevel, message: string, context?: string): void;
   log(messageOrLevel: string | LogLevel, messageOrContext?: string, context?: string) {
-    if (typeof messageOrLevel === 'string' && !Object.values(LogLevel).includes(messageOrLevel as LogLevel)) {
+    if (
+      typeof messageOrLevel === 'string' &&
+      !Object.values(LogLevel).includes(messageOrLevel as LogLevel)
+    ) {
       // First signature: log(message, context)
       this.writeLog(LogLevel.INFO, messageOrLevel, messageOrContext);
     } else {

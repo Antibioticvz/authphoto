@@ -34,7 +34,7 @@ describe('LoggerService', () => {
     it('should log info messages', () => {
       service.log('Test message');
       expect(consoleLogSpy).toHaveBeenCalled();
-      
+
       const loggedData = JSON.parse(consoleLogSpy.mock.calls[0][0]);
       expect(loggedData.level).toBe(LogLevel.INFO);
       expect(loggedData.message).toBe('Test message');
@@ -43,7 +43,7 @@ describe('LoggerService', () => {
 
     it('should include context in log', () => {
       service.log('Test message', 'TestContext');
-      
+
       const loggedData = JSON.parse(consoleLogSpy.mock.calls[0][0]);
       expect(loggedData.context).toBe('TestContext');
     });
@@ -51,7 +51,7 @@ describe('LoggerService', () => {
     it('should use set context', () => {
       service.setContext('GlobalContext');
       service.log('Test message');
-      
+
       const loggedData = JSON.parse(consoleLogSpy.mock.calls[0][0]);
       expect(loggedData.context).toBe('GlobalContext');
     });
@@ -60,7 +60,7 @@ describe('LoggerService', () => {
   describe('debug', () => {
     it('should log debug messages', () => {
       service.debug('Debug message');
-      
+
       const loggedData = JSON.parse(consoleLogSpy.mock.calls[0][0]);
       expect(loggedData.level).toBe(LogLevel.DEBUG);
       expect(loggedData.message).toBe('Debug message');
@@ -70,7 +70,7 @@ describe('LoggerService', () => {
   describe('warn', () => {
     it('should log warning messages', () => {
       service.warn('Warning message');
-      
+
       expect(consoleWarnSpy).toHaveBeenCalled();
       const loggedData = JSON.parse(consoleWarnSpy.mock.calls[0][0]);
       expect(loggedData.level).toBe(LogLevel.WARN);
@@ -81,7 +81,7 @@ describe('LoggerService', () => {
   describe('error', () => {
     it('should log error messages', () => {
       service.error('Error message');
-      
+
       expect(consoleErrorSpy).toHaveBeenCalled();
       const loggedData = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
       expect(loggedData.level).toBe(LogLevel.ERROR);
@@ -90,7 +90,7 @@ describe('LoggerService', () => {
 
     it('should include stack trace', () => {
       service.error('Error message', 'Stack trace');
-      
+
       const loggedData = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
       expect(loggedData.trace).toBe('Stack trace');
     });
@@ -99,7 +99,7 @@ describe('LoggerService', () => {
   describe('verbose', () => {
     it('should log verbose messages as debug', () => {
       service.verbose('Verbose message');
-      
+
       const loggedData = JSON.parse(consoleLogSpy.mock.calls[0][0]);
       expect(loggedData.level).toBe(LogLevel.DEBUG);
       expect(loggedData.message).toBe('Verbose message');
@@ -109,14 +109,14 @@ describe('LoggerService', () => {
   describe('structured logging', () => {
     it('should output valid JSON', () => {
       service.log('Test');
-      
+
       const output = consoleLogSpy.mock.calls[0][0];
       expect(() => JSON.parse(output)).not.toThrow();
     });
 
     it('should include timestamp in ISO format', () => {
       service.log('Test');
-      
+
       const loggedData = JSON.parse(consoleLogSpy.mock.calls[0][0]);
       expect(loggedData.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
     });

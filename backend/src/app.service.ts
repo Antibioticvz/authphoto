@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { CacheService } from './shared/services/cache.service';
 import { CryptoService } from './shared/services/crypto.service';
 import { LoggerService } from './shared/services/logger.service';
-import { CacheService } from './shared/services/cache.service';
 
 @Injectable()
 export class AppService {
