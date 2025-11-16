@@ -203,9 +203,17 @@ function App() {
       setState("uploading")
 
       // Upload to server
+      console.log("🔍 App - About to capture photo with:", {
+        challengeId: challenge.challengeId,
+        clientId: clientId,
+        hash: hash,
+        message: message || undefined,
+      })
+
       await capturePhoto(
         photoBlob,
         challenge.challengeId,
+        clientId,
         hash,
         message || undefined
       )

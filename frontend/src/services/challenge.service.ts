@@ -3,8 +3,8 @@
  * API methods for challenge generation and verification
  */
 
-import { apiClient } from './api';
-import type { ChallengeResponse, ChallengeVerifyResponse } from '../types';
+import type { ChallengeResponse, ChallengeVerifyResponse } from "../types"
+import { apiClient } from "./api"
 
 export class ChallengeService {
   /**
@@ -13,10 +13,21 @@ export class ChallengeService {
    * @returns Challenge data with polygons
    */
   async requestChallenge(clientId: string): Promise<ChallengeResponse> {
-    const response = await apiClient.get<ChallengeResponse>('/api/v1/challenge', {
+    const response = await apiClient.get<{
+      status: string
+      data: ChallengeResponse
+      timestamp: string
+    }>("/api/v1/challenge", {
       params: { clientId },
-    });
-    return response.data;
+    })
+    console.log("🔍 Challenge Service - Raw API Response:", response.data)
+    // Backend wraps response in { status, data, timestamp }, extract the actual data
+    const challengeData = response.data.data || response.data
+    console.log(
+      "🔍 Challenge Service - Extracted challenge data:",
+      challengeData
+    )
+    return challengeData
   }
 
   /**
@@ -26,13 +37,13 @@ export class ChallengeService {
    */
   async verifyChallenge(challengeId: string): Promise<ChallengeVerifyResponse> {
     const response = await apiClient.get<ChallengeVerifyResponse>(
-      '/api/v1/challenge/verify',
+      "/api/v1/challenge/verify",
       {
         params: { challengeId },
       }
-    );
-    return response.data;
+    )
+    return response.data
   }
 }
 
-export const challengeService = new ChallengeService();
+export const challengeService = new ChallengeService()

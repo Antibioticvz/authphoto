@@ -26,10 +26,20 @@ export function useChallenge(): UseChallengeReturn {
 
     try {
       const response = await challengeService.requestChallenge(clientId)
+
+      console.log("🔍 useChallenge - Response from service:", response)
+
+      // Normalize response: ensure polygons is array and expiresAt is a number
       const normalizedResponse: ChallengeResponse = {
         ...response,
         polygons: Array.isArray(response.polygons) ? response.polygons : [],
+        expiresAt:
+          typeof response.expiresAt === "string"
+            ? parseInt(response.expiresAt, 10)
+            : response.expiresAt,
       }
+
+      console.log("🔍 useChallenge - Normalized response:", normalizedResponse)
 
       if (!Array.isArray(response.polygons)) {
         console.warn(

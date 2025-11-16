@@ -3,8 +3,8 @@
  * API methods for photo capture and retrieval
  */
 
-import { apiClient } from './api';
-import type { CaptureResponse, PhotoMetadata } from '../types';
+import type { CaptureResponse, PhotoMetadata } from "../types"
+import { apiClient } from "./api"
 
 export class CaptureService {
   /**
@@ -18,27 +18,35 @@ export class CaptureService {
   async capturePhoto(
     photo: Blob,
     challengeId: string,
+    clientId: string,
     videoHash: string,
     message?: string
   ): Promise<CaptureResponse> {
-    const formData = new FormData();
-    formData.append('photo', photo, 'photo.jpg');
-    formData.append('challengeId', challengeId);
-    formData.append('videoHash', videoHash);
+    const formData = new FormData()
+    formData.append("photo", photo, "photo.jpg")
+    formData.append("challengeId", challengeId)
+    formData.append("clientId", clientId)
+    formData.append("videoHash", videoHash)
     if (message) {
-      formData.append('message', message);
+      formData.append("message", message)
     }
 
-    const response = await apiClient.post<CaptureResponse>(
-      '/api/v1/capture',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
-    return response.data;
+    console.log(
+      "🔍 Capture Service - FormData contents:",
+      Array.from(formData.entries())
+    )
+    console.log("🔍 Capture Service - challengeId being sent:", challengeId)
+
+    const response = await apiClient.post<{
+      status: string
+      data: CaptureResponse
+      timestamp: string
+    }>("/api/v1/capture", formData)
+
+    // Backend wraps response in { status, data, timestamp }, extract the actual data
+    const captureData = response.data.data || response.data
+    console.log("🔍 Capture Service - Extracted capture data:", captureData)
+    return captureData
   }
 
   /**
@@ -49,8 +57,8 @@ export class CaptureService {
   async getPhotoMetadata(photoId: string): Promise<PhotoMetadata> {
     const response = await apiClient.get<PhotoMetadata>(
       `/api/v1/capture/${photoId}/metadata`
-    );
-    return response.data;
+    )
+    return response.data
   }
 
   /**
@@ -59,8 +67,8 @@ export class CaptureService {
    * @returns Photo file URL
    */
   getPhotoUrl(photoId: string): string {
-    return `${apiClient.defaults.baseURL}/api/v1/capture/${photoId}/file`;
+    return `${apiClient.defaults.baseURL}/api/v1/capture/${photoId}/file`
   }
 }
 
-export const captureService = new CaptureService();
+export const captureService = new CaptureService()
