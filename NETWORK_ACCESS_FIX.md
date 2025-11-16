@@ -19,7 +19,7 @@
 ### 3. Network Error on Mobile
 **Problem**: Frontend was connecting to `http://localhost:3000` which refers to the mobile device itself, not the development computer.
 
-**Solution**: Updated API base URL to use the computer's network IP address `192.168.100.4:3000`.
+**Solution**: Updated API base URL to use the computer's network IP address `https://192.168.100.4:3000`.
 
 ## Changes Made
 
@@ -29,7 +29,7 @@
 - Changed server to listen on `0.0.0.0` (all network interfaces) instead of just localhost
 
 ### Frontend (`frontend/`)
-- Updated `.env` to use network IP: `VITE_API_BASE_URL=http://192.168.100.4:3000`
+- Updated `.env` to use network IP: `VITE_API_BASE_URL=https://192.168.100.4:3000`
 - Improved `useCamera.ts` hook with better error handling and video element management
 - Updated `vite.config.ts` with helpful console messages about HTTPS status
 
@@ -65,13 +65,13 @@
 
 ### Mixed Content
 - Frontend runs on HTTPS: `https://192.168.100.4:5173`
-- Backend runs on HTTP: `http://192.168.100.4:3000`
-- This is allowed because API requests from HTTPS to HTTP (mixed content) are permitted for development
-- In production, both should use HTTPS
+- Backend now also runs on HTTPS: `https://192.168.100.4:3000`
+- Browsers block HTTPS pages from calling HTTP APIs, so matching protocols is mandatory even in development
+- Keep backend certificates in `backend/.cert` to ensure HTTPS remains available
 
 ## Current Server Status
 
-✅ Backend running on: `http://192.168.100.4:3000`
+✅ Backend running on: `https://192.168.100.4:3000`
 ✅ Frontend running on: `https://192.168.100.4:5173`
 
 ## Troubleshooting

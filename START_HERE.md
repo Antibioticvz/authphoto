@@ -40,7 +40,7 @@ You'll see a security warning because we use self-signed HTTPS certificates. Thi
 ### 🔧 If IP Address Changes
 If your computer's IP changes, update this file in `frontend/.env`:
 ```env
-VITE_API_BASE_URL=http://[YOUR_NEW_IP]:3000
+VITE_API_BASE_URL=https://[YOUR_NEW_IP]:3000
 ```
 Then restart both servers.
 

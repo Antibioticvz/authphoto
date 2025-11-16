@@ -13,7 +13,7 @@ import {
   ResultDisplay,
 } from "./components"
 import { useCamera, useChallenge, useCapture } from "./hooks"
-import { cryptoService } from "./services"
+import { cryptoService, API_BASE_URL } from "./services"
 import { recordCanvasVideo, captureCanvasFrame, drawPolygon, applyAnimation } from "./utils"
 
 // Check if HTTPS is required and redirect if needed
@@ -268,7 +268,7 @@ function App() {
           <h2>❌ Challenge Error</h2>
           <p>{challengeError}</p>
           <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
-            API URL: {import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}
+            API URL: {API_BASE_URL}
           </p>
           <button onClick={handleStart}>Try Again</button>
         </div>

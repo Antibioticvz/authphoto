@@ -5,7 +5,25 @@
 
 import axios, { type AxiosInstance } from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const DEFAULT_FALLBACK_URL = 'http://localhost:3000';
+const DEFAULT_API_PORT = import.meta.env.VITE_API_PORT || '3000';
+
+function resolveApiBaseUrl(): string {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+
+  if (typeof window !== 'undefined') {
+    const protocol = window.location.protocol || 'http:';
+    const hostname = window.location.hostname || 'localhost';
+    const portSuffix = DEFAULT_API_PORT ? `:${DEFAULT_API_PORT}` : '';
+    return `${protocol}//${hostname}${portSuffix}`;
+  }
+
+  return DEFAULT_FALLBACK_URL;
+}
+
+export const API_BASE_URL = resolveApiBaseUrl();
 
 export class ApiClient {
   private client: AxiosInstance;

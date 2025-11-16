@@ -57,7 +57,7 @@ src/
 
 - Node.js 18+ 
 - npm or yarn
-- Backend API running on http://localhost:3000
+- Backend API running on https://localhost:3000
 
 ### Installation
 
@@ -70,7 +70,7 @@ npm install
 Create `.env` file:
 
 ```env
-VITE_API_BASE_URL=http://localhost:3000
+VITE_API_BASE_URL=https://localhost:3000
 ```
 
 ### Development
@@ -79,7 +79,7 @@ VITE_API_BASE_URL=http://localhost:3000
 npm run dev
 ```
 
-Open http://localhost:5173
+Open https://localhost:5173 (accept the self-signed certificate warning)
 
 ### Build
 
