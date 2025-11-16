@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CaptureService } from '../capture.service';
-import { ChallengeService } from '../../challenge/challenge.service';
-import { CryptoService } from '../../shared/services/crypto.service';
-import { CacheService } from '../../shared/services/cache.service';
-import { LoggerService } from '../../shared/services/logger.service';
 import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+import { ChallengeService } from '../../challenge/challenge.service';
+import { CacheService } from '../../shared/services/cache.service';
+import { CryptoService } from '../../shared/services/crypto.service';
+import { LoggerService } from '../../shared/services/logger.service';
+import { CaptureService } from '../capture.service';
 
 // Mock Multer File type
 type MockFile = {
@@ -90,13 +90,13 @@ describe('CaptureService', () => {
       const challenge1 = challengeService.createChallenge('test');
       const challenge2 = challengeService.createChallenge('test');
 
-      const result1 = await service.capturePhoto(mockPhoto as any, {
+      const result1 = await service.capturePhoto(mockPhoto, {
         challengeId: challenge1.challengeId,
         clientId: 'test',
         videoHash: 'a'.repeat(64),
       });
 
-      const result2 = await service.capturePhoto(mockPhoto as any, {
+      const result2 = await service.capturePhoto(mockPhoto, {
         challengeId: challenge2.challengeId,
         clientId: 'test',
         videoHash: 'b'.repeat(64),
@@ -264,47 +264,57 @@ describe('CaptureService', () => {
   describe('validatePhotoFile', () => {
     it('should accept valid JPEG', () => {
       const file = {
+        buffer: Buffer.from(''),
+        originalname: 'test.jpg',
         mimetype: 'image/jpeg',
         size: 1024 * 1024, // 1MB
-      } as any;
+      };
 
-      expect(() => service.validatePhotoFile(file)).not.toThrow();
+      expect(() => service.validatePhotoFile(file as unknown)).not.toThrow();
     });
 
     it('should accept valid PNG', () => {
       const file = {
+        buffer: Buffer.from(''),
+        originalname: 'test.png',
         mimetype: 'image/png',
         size: 1024 * 1024,
-      } as any;
+      };
 
-      expect(() => service.validatePhotoFile(file)).not.toThrow();
+      expect(() => service.validatePhotoFile(file as unknown)).not.toThrow();
     });
 
     it('should reject non-image files', () => {
       const file = {
+        buffer: Buffer.from(''),
+        originalname: 'test.pdf',
         mimetype: 'application/pdf',
         size: 1024,
-      } as any;
+      };
 
-      expect(() => service.validatePhotoFile(file)).toThrow();
+      expect(() => service.validatePhotoFile(file as unknown)).toThrow();
     });
 
     it('should reject files over 10MB', () => {
       const file = {
+        buffer: Buffer.from(''),
+        originalname: 'test.jpg',
         mimetype: 'image/jpeg',
         size: 11 * 1024 * 1024, // 11MB
-      } as any;
+      };
 
-      expect(() => service.validatePhotoFile(file)).toThrow();
+      expect(() => service.validatePhotoFile(file as unknown)).toThrow();
     });
 
     it('should reject empty files', () => {
       const file = {
+        buffer: Buffer.from(''),
+        originalname: 'test.jpg',
         mimetype: 'image/jpeg',
         size: 0,
-      } as any;
+      };
 
-      expect(() => service.validatePhotoFile(file)).toThrow();
+      expect(() => service.validatePhotoFile(file as unknown)).toThrow();
     });
   });
 

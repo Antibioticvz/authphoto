@@ -1,13 +1,20 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { promises as fs } from 'fs';
+import * as path from 'path';
 import { ChallengeService } from '../challenge/challenge.service';
 import { CryptoService } from '../shared/services/crypto.service';
 import { LoggerService } from '../shared/services/logger.service';
 import { CapturePhotoDto } from './dto/capture-photo.dto';
 import { CaptureResponseDto } from './dto/capture-response.dto';
 import { PhotoMetadata } from './entities/photo.entity';
-import { promises as fs } from 'fs';
-import * as path from 'path';
+
+interface PhotoFile {
+  buffer: Buffer;
+  originalname: string;
+  mimetype: string;
+  size: number;
+}
 
 /**
  * Service for handling photo capture and verification
@@ -36,9 +43,10 @@ export class CaptureService {
    * @param dto - Capture request data
    * @returns Capture response with verification result
    */
-  async capturePhoto(photo: any, dto: CapturePhotoDto): Promise<CaptureResponseDto> {
+  async capturePhoto(photo: unknown, dto: CapturePhotoDto): Promise<CaptureResponseDto> {
     // 1. Validate photo file
     this.validatePhotoFile(photo);
+    const photoFile = photo as PhotoFile;
 
     // 2. Validate video hash format
     this.verifyVideoHash(dto.videoHash);
@@ -61,7 +69,7 @@ export class CaptureService {
     // 6. Save photo to disk
     const fileName = `${photoId}.jpg`;
     const filePath = path.join(this.photosDir, fileName);
-    await fs.writeFile(filePath, photo.buffer);
+    await fs.writeFile(filePath, photoFile.buffer);
 
     // 7. Generate photo URL
     const photoUrl = `${this.baseUrl}/api/v1/photos/${photoId}`;
@@ -77,8 +85,8 @@ export class CaptureService {
       timestamp,
       filePath,
       photoUrl,
-      fileSize: photo.size,
-      mimeType: photo.mimetype,
+      fileSize: photoFile.size,
+      mimeType: photoFile.mimetype,
     };
 
     // 9. Save metadata
@@ -130,24 +138,26 @@ export class CaptureService {
    * @param file - Uploaded file
    * @throws BadRequestException if file is invalid
    */
-  validatePhotoFile(file: any): void {
+  validatePhotoFile(file: unknown): void {
     if (!file) {
       throw new BadRequestException('No photo file provided');
     }
 
+    const photoFile = file as PhotoFile;
+
     // Check file size (max 10MB)
     const maxSize = 10 * 1024 * 1024;
-    if (file.size === 0) {
+    if (photoFile.size === 0) {
       throw new BadRequestException('Photo file is empty');
     }
-    if (file.size > maxSize) {
+    if (photoFile.size > maxSize) {
       throw new BadRequestException('Photo file too large (max 10MB)');
     }
 
     // Check MIME type
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    if (!allowedTypes.includes(file.mimetype)) {
-      throw new BadRequestException('Invalid photo format. Only JPEG and PNG are allowed');
+    if (!allowedTypes.includes(photoFile.mimetype)) {
+      throw new BadRequestException('Invalid file type. Only JPEG and PNG are allowed');
     }
   }
 

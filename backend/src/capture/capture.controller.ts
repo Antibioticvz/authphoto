@@ -1,21 +1,21 @@
 import {
-  Controller,
-  Post,
-  Get,
-  Param,
   Body,
-  UploadedFile,
-  UseInterceptors,
+  Controller,
+  Get,
   HttpException,
   HttpStatus,
+  Param,
+  Post,
   Res,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
+import { promises as fs } from 'fs';
 import { CaptureService } from './capture.service';
 import { CapturePhotoDto } from './dto/capture-photo.dto';
 import { CaptureResponseDto } from './dto/capture-response.dto';
-import { promises as fs } from 'fs';
 
 /**
  * Controller for photo capture and retrieval
@@ -31,7 +31,7 @@ export class CaptureController {
   @Post()
   @UseInterceptors(FileInterceptor('photo'))
   async capturePhoto(
-    @UploadedFile() photo: any,
+    @UploadedFile() photo: unknown,
     @Body() dto: CapturePhotoDto,
   ): Promise<CaptureResponseDto> {
     if (!photo) {
