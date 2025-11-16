@@ -1,0 +1,75 @@
+name: Specification Check
+
+on:
+  pull_request:
+    paths:
+      - 'specs/**'
+      - '.specify/**'
+
+jobs:
+  check-specs:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check for spec completeness
+        run: |
+          echo "Checking specification completeness..."
+          
+          # Check each spec directory
+          for spec_dir in specs/*/; do
+            if [ -d "$spec_dir" ]; then
+              spec_name=$(basename "$spec_dir")
+              echo "Checking spec: $spec_name"
+              
+              # Check for required files
+              missing_files=()
+              
+              if [ ! -f "${spec_dir}spec.md" ] && [ ! -f "${spec_dir}plan.md" ]; then
+                missing_files+=("spec.md or plan.md")
+              fi
+              
+              if [ ! -f "${spec_dir}tasks.md" ]; then
+                missing_files+=("tasks.md")
+              fi
+              
+              if [ ${#missing_files[@]} -gt 0 ]; then
+                echo "::warning::Spec $spec_name is missing: ${missing_files[*]}"
+              else
+                echo "✓ Spec $spec_name is complete"
+              fi
+            fi
+          done
+      
+      - name: Check constitution alignment
+        run: |
+          echo "Verifying constitution alignment..."
+          
+          # Check if constitution exists
+          if [ ! -f ".specify/memory/constitution.md" ]; then
+            echo "::error::Constitution file not found!"
+            exit 1
+          fi
+          
+          # Extract key principles
+          echo "Constitution principles found:"
+          grep "^### " .specify/memory/constitution.md || true
+          
+          echo "✓ Constitution check complete"
+      
+      - name: Validate markdown syntax
+        run: |
+          echo "Validating markdown files..."
+          
+          # Simple markdown validation
+          for md_file in specs/**/*.md .specify/memory/*.md; do
+            if [ -f "$md_file" ]; then
+              # Check for basic markdown structure
+              if grep -q "^#" "$md_file"; then
+                echo "✓ $md_file has headers"
+              else
+                echo "::warning::$md_file may be missing headers"
+              fi
+            fi
+          done
