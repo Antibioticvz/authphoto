@@ -55,7 +55,7 @@ src/
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 - Backend API running on https://localhost:3000
 
@@ -96,16 +96,19 @@ npm run preview
 ## Usage Flow
 
 1. **Initialize**
+
    - App requests challenge from API
    - Camera permission requested
    - Challenge polygons received
 
 2. **Camera View**
+
    - Live camera preview
    - Animated polygons overlay
    - User positions themselves
 
 3. **Capture**
+
    - Click "Capture Photo" button
    - 2-second video recorded with polygons
    - SHA-256 hash calculated
@@ -124,6 +127,7 @@ npm run preview
 - Edge 90+
 
 **Required APIs:**
+
 - MediaDevices (WebRTC)
 - Canvas 2D
 - MediaRecorder

@@ -1,8 +1,8 @@
-import { existsSync, readFileSync } from 'fs';
-import { resolve } from 'path';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpsOptions } from '@nestjs/common/interfaces/external/https-options.interface';
 import { NestFactory } from '@nestjs/core';
+import { existsSync, readFileSync } from 'fs';
+import { resolve } from 'path';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -69,7 +69,7 @@ async function bootstrap() {
     'http://192.168.100.4:5173',
     'https://192.168.100.4:5173',
   ];
-  
+
   if (process.env.CORS_ORIGIN) {
     allowedOrigins.push(process.env.CORS_ORIGIN);
   }

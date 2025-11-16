@@ -6,11 +6,12 @@
 # In Terminal 1 - Start Backend
 cd backend && npm run dev
 
-# In Terminal 2 - Start Frontend  
+# In Terminal 2 - Start Frontend
 cd frontend && npm run dev
 ```
 
 Then open in your browser:
+
 - **Desktop**: `https://localhost:5173`
 - **Mobile**: `https://192.168.100.4:5173` (same WiFi)
 
@@ -25,28 +26,35 @@ All camera issues have been **FIXED**! ✅
 ## Important Notes
 
 ### 🔒 Certificate Warning
+
 You'll see a security warning because we use self-signed HTTPS certificates. This is **normal and safe** for development.
 
 **How to proceed:**
+
 - Desktop: Click "Advanced" → "Proceed to localhost (unsafe)"
 - Mobile: Tap "Show Details" → "visit this website" → confirm
 
 ### 📱 Mobile Access
+
 1. Your phone must be on the **same WiFi** as your computer
 2. Use `https://` not `http://`
 3. Accept the certificate warning
 4. Grant camera permission
 
 ### 🔧 If IP Address Changes
+
 If your computer's IP changes, update this file in `frontend/.env`:
+
 ```env
 VITE_API_BASE_URL=https://[YOUR_NEW_IP]:3000
 ```
+
 Then restart both servers.
 
 ## Testing Checklist
 
 ### Desktop
+
 - [ ] Open `https://localhost:5173`
 - [ ] Accept certificate warning
 - [ ] Grant camera permission
@@ -54,6 +62,7 @@ Then restart both servers.
 - [ ] Capture a photo successfully
 
 ### Mobile
+
 - [ ] Connect to same WiFi
 - [ ] Open `https://192.168.100.4:5173`
 - [ ] Accept certificate warning (2 taps)
@@ -63,12 +72,12 @@ Then restart both servers.
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| White screen on desktop | Use `https://` and hard refresh (Cmd+Shift+R) |
-| "undefined is not an object" on mobile | Make sure you're using `https://` |
-| Network Error on mobile | Check same WiFi, try `http://192.168.100.4:3000/api/v1/health` |
-| Certificate error | Accept the warning (it's safe for development) |
+| Problem                                | Solution                                                       |
+| -------------------------------------- | -------------------------------------------------------------- |
+| White screen on desktop                | Use `https://` and hard refresh (Cmd+Shift+R)                  |
+| "undefined is not an object" on mobile | Make sure you're using `https://`                              |
+| Network Error on mobile                | Check same WiFi, try `http://192.168.100.4:3000/api/v1/health` |
+| Certificate error                      | Accept the warning (it's safe for development)                 |
 
 ## Documentation
 

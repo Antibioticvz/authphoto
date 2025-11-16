@@ -3,7 +3,7 @@
  * Main application component for photo capture with polygon challenges
  */
 
-import { useState, useRef, useEffect } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import "./App.css"
 import {
   Camera,
@@ -12,24 +12,30 @@ import {
   MessageInput,
   ResultDisplay,
 } from "./components"
-import { useCamera, useChallenge, useCapture } from "./hooks"
-import { cryptoService, API_BASE_URL } from "./services"
-import { recordCanvasVideo, captureCanvasFrame, drawPolygon, applyAnimation } from "./utils"
+import { useCamera, useCapture, useChallenge } from "./hooks"
+import { API_BASE_URL, cryptoService } from "./services"
+import {
+  applyAnimation,
+  captureCanvasFrame,
+  drawPolygon,
+  recordCanvasVideo,
+} from "./utils"
 
 // Check if HTTPS is required and redirect if needed
 function checkAndRedirectToHTTPS() {
-  const isLocalhost = window.location.hostname === 'localhost' || 
-                       window.location.hostname === '127.0.0.1'
-  const isHTTPS = window.location.protocol === 'https:'
-  
+  const isLocalhost =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+  const isHTTPS = window.location.protocol === "https:"
+
   // If not localhost and not HTTPS, we need to redirect
   if (!isLocalhost && !isHTTPS) {
-    const httpsUrl = window.location.href.replace('http://', 'https://')
-    console.warn('Camera API requires HTTPS. Redirecting to:', httpsUrl)
+    const httpsUrl = window.location.href.replace("http://", "https://")
+    console.warn("Camera API requires HTTPS. Redirecting to:", httpsUrl)
     window.location.href = httpsUrl
     return true // Redirecting
   }
-  
+
   return false // No redirect needed
 }
 
@@ -58,6 +64,8 @@ function App() {
   } = useCamera()
   const { challenge, error: challengeError, requestChallenge } = useChallenge()
   const { result, error: captureError, capturePhoto } = useCapture()
+
+  const polygons = useMemo(() => challenge?.polygons ?? [], [challenge])
 
   const compositeCanvasRef = useRef<HTMLCanvasElement>(null)
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -94,10 +102,10 @@ function App() {
 
   // Draw polygons to hidden overlay canvas for composite rendering
   useEffect(() => {
-    if (!challenge || !overlayCanvasRef.current) return
+    if (!challenge || polygons.length === 0 || !overlayCanvasRef.current) return
 
     const canvas = overlayCanvasRef.current
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext("2d")
     if (!ctx) return
 
     const startTime = Date.now()
@@ -110,7 +118,7 @@ function App() {
       ctx.clearRect(0, 0, canvasWidth, canvasHeight)
 
       // Draw all polygons with animations
-      challenge.polygons.forEach(polygon => {
+      polygons?.forEach(polygon => {
         const animatedPolygon = applyAnimation(polygon, elapsed)
         drawPolygon(ctx, animatedPolygon, canvasWidth, canvasHeight)
       })
@@ -125,7 +133,7 @@ function App() {
         cancelAnimationFrame(animationFrameId)
       }
     }
-  }, [challenge, canvasWidth, canvasHeight])
+  }, [challenge, polygons, canvasWidth, canvasHeight])
 
   const handleStart = async () => {
     setState("requesting")
@@ -223,7 +231,9 @@ function App() {
         <div className="loading">
           <h2>🔒 Redirecting to HTTPS...</h2>
           <p>Camera access requires a secure connection.</p>
-          <p style={{ fontSize: '12px', color: '#666' }}>You'll need to accept the security warning.</p>
+          <p style={{ fontSize: "12px", color: "#666" }}>
+            You'll need to accept the security warning.
+          </p>
         </div>
       )
     }
@@ -233,31 +243,51 @@ function App() {
         <div className="loading">
           <h2>🔄 Initializing...</h2>
           <p>Requesting challenge and starting camera...</p>
-          {state === "requesting" && <p style={{ fontSize: '12px', color: '#666' }}>Please wait...</p>}
+          {state === "requesting" && (
+            <p style={{ fontSize: "12px", color: "#666" }}>Please wait...</p>
+          )}
         </div>
       )
     }
 
     if (cameraError) {
-      const isHttpsError = cameraError.includes('not supported') || cameraError.includes('HTTPS');
-      
+      const isHttpsError =
+        cameraError.includes("not supported") || cameraError.includes("HTTPS")
+
       return (
         <div className="error">
           <h2>❌ Camera Error</h2>
           <p>{cameraError}</p>
           {isHttpsError && (
-            <div style={{ marginTop: '15px', padding: '15px', backgroundColor: '#fff3cd', borderRadius: '5px', textAlign: 'left' }}>
+            <div
+              style={{
+                marginTop: "15px",
+                padding: "15px",
+                backgroundColor: "#fff3cd",
+                borderRadius: "5px",
+                textAlign: "left",
+              }}
+            >
               <h3 style={{ marginTop: 0 }}>💡 Solution:</h3>
               <p>Camera access requires HTTPS when not on localhost.</p>
-              <ol style={{ marginLeft: '20px' }}>
-                <li>Make sure you're accessing via HTTPS: <code>https://192.168.100.4:5173</code></li>
-                <li>Accept the self-signed certificate warning in your browser</li>
+              <ol style={{ marginLeft: "20px" }}>
+                <li>
+                  Make sure you're accessing via HTTPS:{" "}
+                  <code>https://192.168.100.4:5173</code>
+                </li>
+                <li>
+                  Accept the self-signed certificate warning in your browser
+                </li>
                 <li>Grant camera permission when prompted</li>
               </ol>
-              <p>Current URL: <code>{window.location.href}</code></p>
+              <p>
+                Current URL: <code>{window.location.href}</code>
+              </p>
             </div>
           )}
-          <button onClick={handleStart} style={{ marginTop: '15px' }}>Try Again</button>
+          <button onClick={handleStart} style={{ marginTop: "15px" }}>
+            Try Again
+          </button>
         </div>
       )
     }
@@ -267,7 +297,7 @@ function App() {
         <div className="error">
           <h2>❌ Challenge Error</h2>
           <p>{challengeError}</p>
-          <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
+          <p style={{ fontSize: "12px", color: "#666", marginTop: "10px" }}>
             API URL: {API_BASE_URL}
           </p>
           <button onClick={handleStart}>Try Again</button>
@@ -303,9 +333,9 @@ function App() {
             width={canvasWidth}
             height={canvasHeight}
           />
-          {challenge && (
+          {challenge && polygons.length > 0 && (
             <CanvasOverlay
-              polygons={challenge.polygons}
+              polygons={polygons}
               width={canvasWidth}
               height={canvasHeight}
             />
@@ -350,7 +380,7 @@ function App() {
             style={{ marginTop: "20px", fontSize: "12px", color: "#666" }}
           >
             <p>Challenge ID: {challenge.challengeId}</p>
-            <p>Polygons: {challenge.polygons.length}</p>
+            <p>Polygons: {polygons.length}</p>
             <p>Expires: {new Date(challenge.expiresAt).toLocaleTimeString()}</p>
             {videoHash && <p>Video Hash: {videoHash.substring(0, 16)}...</p>}
           </div>
