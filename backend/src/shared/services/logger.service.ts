@@ -12,7 +12,7 @@ interface LogEntry {
   message: string;
   context?: string;
   timestamp: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**

@@ -11,7 +11,7 @@ interface CacheEntry<T> {
  */
 @Injectable()
 export class CacheService {
-  private cache: Map<string, CacheEntry<any>> = new Map();
+  private cache: Map<string, CacheEntry<unknown>> = new Map();
 
   /**
    * Sets a value in the cache with an optional TTL.

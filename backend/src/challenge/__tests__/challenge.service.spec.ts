@@ -6,9 +6,7 @@ import { LoggerService } from '../../shared/services/logger.service';
 
 describe('ChallengeService', () => {
   let service: ChallengeService;
-  let cryptoService: CryptoService;
   let cacheService: CacheService;
-  let loggerService: LoggerService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -16,9 +14,7 @@ describe('ChallengeService', () => {
     }).compile();
 
     service = module.get<ChallengeService>(ChallengeService);
-    cryptoService = module.get<CryptoService>(CryptoService);
     cacheService = module.get<CacheService>(CacheService);
-    loggerService = module.get<LoggerService>(LoggerService);
   });
 
   afterEach(() => {

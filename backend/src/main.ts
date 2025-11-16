@@ -3,9 +3,11 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { LoggerService } from './shared/services/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = app.get(LoggerService);
 
   // Set global prefix
   app.setGlobalPrefix('api/v1');
@@ -34,8 +36,8 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   await app.listen(port);
 
-  console.log(`🚀 Server is running on: http://localhost:${port}/api/v1`);
-  console.log(`📋 Health check: http://localhost:${port}/api/v1/health`);
+  logger.log(`🚀 Server is running on: http://localhost:${port}/api/v1`, 'Bootstrap');
+  logger.log(`📋 Health check: http://localhost:${port}/api/v1/health`, 'Bootstrap');
 }
 
 bootstrap();
