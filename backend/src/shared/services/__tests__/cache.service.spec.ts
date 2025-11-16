@@ -126,10 +126,10 @@ describe('CacheService', () => {
     it('should remove expired entries', async () => {
       service.set('key1', 'value1', 0.1); // expires
       service.set('key2', 'value2', 10); // doesn't expire
-      
+
       await new Promise((resolve) => setTimeout(resolve, 150));
       const removed = service.cleanup();
-      
+
       expect(removed).toBe(1);
       expect(service.size()).toBe(1);
       expect(service.get('key1')).toBeNull();
