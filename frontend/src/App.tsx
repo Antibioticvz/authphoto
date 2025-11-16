@@ -16,6 +16,23 @@ import { useCamera, useChallenge, useCapture } from "./hooks"
 import { cryptoService } from "./services"
 import { recordCanvasVideo, captureCanvasFrame, drawPolygon, applyAnimation } from "./utils"
 
+// Check if HTTPS is required and redirect if needed
+function checkAndRedirectToHTTPS() {
+  const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1'
+  const isHTTPS = window.location.protocol === 'https:'
+  
+  // If not localhost and not HTTPS, we need to redirect
+  if (!isLocalhost && !isHTTPS) {
+    const httpsUrl = window.location.href.replace('http://', 'https://')
+    console.warn('Camera API requires HTTPS. Redirecting to:', httpsUrl)
+    window.location.href = httpsUrl
+    return true // Redirecting
+  }
+  
+  return false // No redirect needed
+}
+
 type AppState =
   | "idle"
   | "requesting"
@@ -30,6 +47,7 @@ function App() {
   const [message, setMessage] = useState("")
   const [clientId] = useState(() => cryptoService.generateClientId())
   const [videoHash, setVideoHash] = useState<string>("")
+  const [isRedirecting, setIsRedirecting] = useState(false)
 
   const {
     videoRef,
@@ -47,9 +65,16 @@ function App() {
   const canvasWidth = 640
   const canvasHeight = 480
 
+  // Check HTTPS requirement first
+  useEffect(() => {
+    if (checkAndRedirectToHTTPS()) {
+      setIsRedirecting(true)
+    }
+  }, [])
+
   // Initialize: request challenge and start camera
   useEffect(() => {
-    if (state === "idle") {
+    if (state === "idle" && !isRedirecting) {
       const start = async () => {
         setState("requesting")
 
@@ -65,7 +90,7 @@ function App() {
 
       start()
     }
-  }, [state, requestChallenge, startCamera, clientId])
+  }, [state, requestChallenge, startCamera, clientId, isRedirecting])
 
   // Draw polygons to hidden overlay canvas for composite rendering
   useEffect(() => {
@@ -193,6 +218,16 @@ function App() {
   }
 
   const renderContent = () => {
+    if (isRedirecting) {
+      return (
+        <div className="loading">
+          <h2>🔒 Redirecting to HTTPS...</h2>
+          <p>Camera access requires a secure connection.</p>
+          <p style={{ fontSize: '12px', color: '#666' }}>You'll need to accept the security warning.</p>
+        </div>
+      )
+    }
+
     if (state === "idle" || state === "requesting") {
       return (
         <div className="loading">

@@ -44,22 +44,21 @@ export function useCamera(): UseCameraReturn {
       setStream(mediaStream)
 
       if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream
+        const video = videoRef.current
+        video.srcObject = mediaStream
 
         // Wait for the video to be ready and play it
         try {
           // Wait for metadata
           await new Promise<void>((resolve, reject) => {
-            if (!videoRef.current) {
-              reject(new Error("Video element not found"))
-              return
-            }
-
-            const video = videoRef.current
-
             const onLoadedMetadata = () => {
               video.removeEventListener("loadedmetadata", onLoadedMetadata)
               video.removeEventListener("error", onError)
+              console.log("Camera: Video metadata loaded", {
+                videoWidth: video.videoWidth,
+                videoHeight: video.videoHeight,
+                readyState: video.readyState
+              })
               resolve()
             }
 
@@ -72,6 +71,7 @@ export function useCamera(): UseCameraReturn {
 
             // If already loaded, resolve immediately
             if (video.readyState >= 1) {
+              console.log("Camera: Video already loaded")
               resolve()
               return
             }
@@ -81,13 +81,16 @@ export function useCamera(): UseCameraReturn {
           })
 
           // Now play the video
-          if (videoRef.current) {
-            await videoRef.current.play()
-            console.log("Camera started successfully")
-          }
+          console.log("Camera: Attempting to play video...")
+          await video.play()
+          console.log("Camera: Video playing successfully", {
+            paused: video.paused,
+            ended: video.ended,
+            readyState: video.readyState
+          })
         } catch (playError) {
           console.error("Failed to play video:", playError)
-          throw new Error("Failed to start video playback")
+          throw new Error(`Failed to start video playback: ${playError instanceof Error ? playError.message : 'Unknown error'}`)
         }
       }
     } catch (err) {

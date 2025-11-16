@@ -60,7 +60,7 @@ export const CanvasOverlay: React.FC<CanvasOverlayProps> = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [polygons, width, height]);
+  }, [polygons, width, height, canvasRef]);
 
   return (
     <canvas
