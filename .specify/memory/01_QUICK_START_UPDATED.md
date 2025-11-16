@@ -1,9 +1,10 @@
 # БЫСТРЫЙ СТАРТ — AuthPhoto
+
 ## Путеводитель для начинающих разработчиков
 
 **Версия:** 2.0 (с планом разработки)  
 **Время на понимание:** 30-45 минут  
-**Навык:** Junior+  
+**Навык:** Junior+
 
 ---
 
@@ -11,25 +12,28 @@
 
 ### 🎯 ДЛЯ МЕНЕДЖЕРОВ & БИЗНЕСА
 
-| Документ | Описание | Время |
-|---|---|---|
-| **[README.md](./README.md)** | Что это, как это работает, как интегрировать | 5 мин |
+| Документ                                                       | Описание                                       | Время  |
+| -------------------------------------------------------------- | ---------------------------------------------- | ------ |
+| **[README.md](./README.md)**                                   | Что это, как это работает, как интегрировать   | 5 мин  |
 | **[TECHNICAL_SPECIFICATION.md](./TECHNICAL_SPECIFICATION.md)** | Полное описание системы, алгоритм, архитектура | 15 мин |
 
 ### 💻 ДЛЯ РАЗРАБОТЧИКОВ
 
 **Фронтенд разработчики:**
+
 1. [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) - Архитектура фронтенда, компоненты, паттерны
 2. [ARCHITECTURE_PATTERNS.md](./ARCHITECTURE_PATTERNS.md) - Factory, Strategy, Observer паттерны
 3. [MOBILE_FIRST_DESIGN.md](./MOBILE_FIRST_DESIGN.md) - Мобильная оптимизация, Tailwind конфиг
 4. [PERFORMANCE_OPTIMIZATION.md](./PERFORMANCE_OPTIMIZATION.md) - Code splitting, caching, optimization
 
 **Бэкенд разработчики:**
+
 1. [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) - NestJS архитектура, модули, сервисы
 2. [ARCHITECTURE_PATTERNS.md](./ARCHITECTURE_PATTERNS.md) - Dependency Injection, Repository, Adapter
 3. [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - Step-by-step инструкции
 
 **Все разработчики:**
+
 - [BEST_PRACTICES_CHECKLIST.md](./BEST_PRACTICES_CHECKLIST.md) - ДО КАЖДОГО COMMIT!
 - [API_PROTOCOL_AND_EXAMPLES.md](./API_PROTOCOL_AND_EXAMPLES.md) - JSON примеры, endpoints
 - [constitution.md](./constitution.md) - Наши принципы, standards
@@ -152,6 +156,7 @@ authphoto/
 ### Frontend (React)
 
 ✅ **Всегда используй:**
+
 - Feature-based folder structure
 - Custom hooks для logic
 - Zustand для state
@@ -159,6 +164,7 @@ authphoto/
 - React.memo для мемоизации
 
 ❌ **Никогда не делай:**
+
 - Class components
 - Redux (используй Zustand)
 - console.log в production
@@ -168,6 +174,7 @@ authphoto/
 ### Backend (NestJS)
 
 ✅ **Всегда используй:**
+
 - Modules для organization
 - Dependency Injection
 - DTOs для validation
@@ -175,6 +182,7 @@ authphoto/
 - Global exception filter
 
 ❌ **Никогда не делай:**
+
 - Прямой access к DB из controller
 - Circular module dependencies
 - Hardcoded config values
@@ -344,32 +352,35 @@ npm run type-check
 
 ## 📞 ПОМОЩЬ И РЕСУРСЫ
 
-| Что | Где |
-|---|---|
-| **Как начать feature** | → [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) |
-| **Как писать компоненты** | → [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) |
-| **Какие паттерны использовать** | → [ARCHITECTURE_PATTERNS.md](./ARCHITECTURE_PATTERNS.md) |
-| **API endpoints** | → [API_PROTOCOL_AND_EXAMPLES.md](./API_PROTOCOL_AND_EXAMPLES.md) |
-| **Как оптимизировать** | → [PERFORMANCE_OPTIMIZATION.md](./PERFORMANCE_OPTIMIZATION.md) |
-| **Перед commit** | → [BEST_PRACTICES_CHECKLIST.md](./BEST_PRACTICES_CHECKLIST.md) |
+| Что                             | Где                                                              |
+| ------------------------------- | ---------------------------------------------------------------- |
+| **Как начать feature**          | → [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md)                 |
+| **Как писать компоненты**       | → [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md)                   |
+| **Какие паттерны использовать** | → [ARCHITECTURE_PATTERNS.md](./ARCHITECTURE_PATTERNS.md)         |
+| **API endpoints**               | → [API_PROTOCOL_AND_EXAMPLES.md](./API_PROTOCOL_AND_EXAMPLES.md) |
+| **Как оптимизировать**          | → [PERFORMANCE_OPTIMIZATION.md](./PERFORMANCE_OPTIMIZATION.md)   |
+| **Перед commit**                | → [BEST_PRACTICES_CHECKLIST.md](./BEST_PRACTICES_CHECKLIST.md)   |
 
 ---
 
 ## 🎓 LEARNING PATH
 
 **Week 1: Основы**
+
 - Day 1: Understand system architecture
 - Day 2: Setup environment
 - Day 3: First component
 - Day 4-5: First PR
 
 **Week 2: Паттерны**
+
 - Day 1: Factory pattern (создание сервисов)
 - Day 2: Strategy pattern (валидация)
 - Day 3: Observer pattern (реал-тайм)
 - Day 4-5: Implement with patterns
 
 **Week 3: Production-ready**
+
 - Day 1: Performance optimization
 - Day 2: Mobile testing
 - Day 3: Security audit

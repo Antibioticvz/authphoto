@@ -1,4 +1,5 @@
 # Чек-лист лучших практик разработки — AuthPhoto
+
 ## Гайд для кода, который готов к production
 
 **Версия:** 1.0  
@@ -10,13 +11,15 @@
 ## ✅ ПЕРЕД НАЧАЛОМ РАЗРАБОТКИ
 
 ### Планирование
+
 - [ ] Feature описан в GitHub Issue
 - [ ] Задача есть в Project board
 - [ ] Определены acceptance criteria
 - [ ] Обговорены dependencies с другими tasks
-- [ ] Выбран правильный branch (feature/*, bugfix/*, etc)
+- [ ] Выбран правильный branch (feature/_, bugfix/_, etc)
 
 ### Подготовка
+
 - [ ] Создан feature branch: `git checkout -b feature/feature-name`
 - [ ] Workspace очищен: `git status` показывает чистый репозиторий
 - [ ] Последние изменения залиты: `git pull origin main`
@@ -39,20 +42,20 @@
 ```typescript
 // ✅ ПРАВИЛЬНО
 interface ApiResponse<T> {
-  status: 'success' | 'error';
-  data?: T;
-  error?: string;
+  status: "success" | "error"
+  data?: T
+  error?: string
 }
 
 const handleResponse = (response: ApiResponse<User>): void => {
-  if (response.status === 'error') {
-    console.error(response.error);
+  if (response.status === "error") {
+    console.error(response.error)
   }
-};
+}
 
 // ❌ НЕПРАВИЛЬНО
-const response: any = null;
-const data = response.data!; // Don't use !
+const response: any = null
+const data = response.data! // Don't use !
 ```
 
 ### React Components
@@ -70,9 +73,9 @@ const data = response.data!; // Don't use !
 ```typescript
 // ✅ ПРАВИЛЬНО
 interface ButtonProps {
-  label: string;
-  onClick: () => void;
-  disabled?: boolean;
+  label: string
+  onClick: () => void
+  disabled?: boolean
 }
 
 export const Button: React.FC<ButtonProps> = React.memo(
@@ -81,14 +84,14 @@ export const Button: React.FC<ButtonProps> = React.memo(
       {label}
     </button>
   )
-);
+)
 
-Button.displayName = 'Button';
+Button.displayName = "Button"
 
 // ❌ НЕПРАВИЛЬНО
 export const Button = ({ label, onClick, disabled }) => {
   // No types, no displayName, could be re-rendered unnecessarily
-};
+}
 ```
 
 ### API Integration
@@ -105,21 +108,21 @@ export const Button = ({ label, onClick, disabled }) => {
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   timeout: 30_000,
-});
+})
 
 api.interceptors.response.use(
-  (response) => response.data,
-  (error) => {
+  response => response.data,
+  error => {
     // Centralized error handling
-    toast.error(error.response?.data?.message || 'Error');
-    throw error;
+    toast.error(error.response?.data?.message || "Error")
+    throw error
   }
-);
+)
 
 export const photoApi = {
   getChallenge: (clientId: string) =>
-    api.get<Challenge>('/challenge', { params: { clientId } })
-};
+    api.get<Challenge>("/challenge", { params: { clientId } }),
+}
 ```
 
 ### State Management (Zustand)
@@ -132,22 +135,22 @@ export const photoApi = {
 ```typescript
 // ✅ ПРАВИЛЬНО
 interface CameraStore {
-  isReady: boolean;
-  challenge: Challenge | null;
-  setReady: (ready: boolean) => void;
-  setChallenge: (challenge: Challenge) => void;
+  isReady: boolean
+  challenge: Challenge | null
+  setReady: (ready: boolean) => void
+  setChallenge: (challenge: Challenge) => void
 }
 
-export const useCameraStore = create<CameraStore>((set) => ({
+export const useCameraStore = create<CameraStore>(set => ({
   isReady: false,
   challenge: null,
-  setReady: (ready) => set({ isReady: ready }),
-  setChallenge: (challenge) => set({ challenge }),
-}));
+  setReady: ready => set({ isReady: ready }),
+  setChallenge: challenge => set({ challenge }),
+}))
 
 // Selector для оптимизации
 export const useChallengeSelector = () =>
-  useCameraStore((state) => state.challenge);
+  useCameraStore(state => state.challenge)
 ```
 
 ### Error Handling
@@ -161,16 +164,16 @@ export const useChallengeSelector = () =>
 ```typescript
 // ✅ ПРАВИЛЬНО
 try {
-  const photo = await camera.capturePhoto();
-  await api.uploadPhoto(photo);
+  const photo = await camera.capturePhoto()
+  await api.uploadPhoto(photo)
 } catch (error) {
   if (error instanceof CameraError) {
-    toast.error('Camera access denied');
+    toast.error("Camera access denied")
   } else if (error instanceof NetworkError) {
-    toast.error('Network error - please try again');
+    toast.error("Network error - please try again")
   } else {
-    toast.error('An unexpected error occurred');
-    console.error(error);
+    toast.error("An unexpected error occurred")
+    console.error(error)
   }
 }
 ```
@@ -189,13 +192,13 @@ try {
 ```typescript
 // ✅ ПРАВИЛЬНО
 // Lazy load routes
-const CameraPage = lazy(() => import('@pages/CameraPage'));
+const CameraPage = lazy(() => import("@pages/CameraPage"))
 
 // Cache API responses
-const cachedData = await cache.get(key) || await api.fetch(key);
+const cachedData = (await cache.get(key)) || (await api.fetch(key))
 
 // Optimize images
-const optimized = await optimizeImage(photo, { quality: 0.85 });
+const optimized = await optimizeImage(photo, { quality: 0.85 })
 ```
 
 ---
@@ -224,7 +227,7 @@ const optimized = await optimizeImage(photo, { quality: 0.85 });
   imports: [SharedModule],
   controllers: [ChallengeController],
   providers: [ChallengeService],
-  exports: [ChallengeService] // Export for other modules
+  exports: [ChallengeService], // Export for other modules
 })
 export class ChallengeModule {}
 
@@ -282,23 +285,23 @@ async capture(@Body() dto: CapturePhotoDto) {
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
+    const ctx = host.switchToHttp()
+    const response = ctx.getResponse()
 
-    let statusCode = 500;
-    let message = 'Internal server error';
+    let statusCode = 500
+    let message = "Internal server error"
 
     if (exception instanceof HttpException) {
-      statusCode = exception.getStatus();
-      message = exception.message;
+      statusCode = exception.getStatus()
+      message = exception.message
     }
 
     response.status(statusCode).json({
-      status: 'error',
+      status: "error",
       statusCode,
       message,
-      timestamp: new Date().toISOString()
-    });
+      timestamp: new Date().toISOString(),
+    })
   }
 }
 ```
@@ -313,12 +316,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
 ```typescript
 // ✅ ПРАВИЛЬНО
-this.logger.log(`Challenge generated: ${challengeId}`, 'ChallengeService');
-this.logger.warn(`Challenge expired: ${challengeId}`, 'ChallengeService');
-this.logger.error(`Upload failed: ${error.message}`, error.stack, 'CaptureService');
+this.logger.log(`Challenge generated: ${challengeId}`, "ChallengeService")
+this.logger.warn(`Challenge expired: ${challengeId}`, "ChallengeService")
+this.logger.error(
+  `Upload failed: ${error.message}`,
+  error.stack,
+  "CaptureService"
+)
 
 // ❌ НЕПРАВИЛЬНО
-console.log('Challenge:', challenge); // Don't use console.log
+console.log("Challenge:", challenge) // Don't use console.log
 ```
 
 ### Security
@@ -356,27 +363,25 @@ async capture(@Body() dto: CapturePhotoDto) {
 
 ```typescript
 // ✅ ПРАВИЛЬНО
-describe('ChallengeService', () => {
-  let service: ChallengeService;
-  let mockCache: any;
+describe("ChallengeService", () => {
+  let service: ChallengeService
+  let mockCache: any
 
   beforeEach(() => {
-    mockCache = { set: jest.fn(), get: jest.fn() };
-    service = new ChallengeService(mockCache);
-  });
+    mockCache = { set: jest.fn(), get: jest.fn() }
+    service = new ChallengeService(mockCache)
+  })
 
-  it('should generate challenge when invoked', async () => {
-    const result = await service.generateChallenge('client-1');
-    expect(result).toHaveProperty('challengeId');
-    expect(mockCache.set).toHaveBeenCalled();
-  });
+  it("should generate challenge when invoked", async () => {
+    const result = await service.generateChallenge("client-1")
+    expect(result).toHaveProperty("challengeId")
+    expect(mockCache.set).toHaveBeenCalled()
+  })
 
-  it('should throw when challengeId is invalid', async () => {
-    await expect(
-      service.validateChallenge(null)
-    ).rejects.toThrow();
-  });
-});
+  it("should throw when challengeId is invalid", async () => {
+    await expect(service.validateChallenge(null)).rejects.toThrow()
+  })
+})
 ```
 
 ---
@@ -386,6 +391,7 @@ describe('ChallengeService', () => {
 Для reviewers - проверьте:
 
 ### Функциональность
+
 - [ ] Код решает поставленную задачу
 - [ ] Нет side effects
 - [ ] Edge cases обработаны
@@ -393,6 +399,7 @@ describe('ChallengeService', () => {
 - [ ] Логика понятна и простая
 
 ### Качество кода
+
 - [ ] Нет console.log
 - [ ] Нет commented-out кода
 - [ ] TypeScript strict mode passed
@@ -401,24 +408,28 @@ describe('ChallengeService', () => {
 - [ ] Правильные имена переменных/функций
 
 ### Тесты
+
 - [ ] Тесты написаны
 - [ ] Тесты проходят
 - [ ] Code coverage достаточный
 - [ ] Happy path + error cases покрыты
 
 ### Документация
+
 - [ ] JSDoc comments где необходимо
 - [ ] README обновлен если needed
 - [ ] API документация актуальна
 - [ ] Complex logic задокументирован
 
 ### Performance
+
 - [ ] Нет n+1 queries
 - [ ] Нет unnecessary re-renders
 - [ ] Bundle size не увеличился
 - [ ] Lighthouse score не упал
 
 ### Security
+
 - [ ] Input validation
 - [ ] XSS защита (React автоматически)
 - [ ] CSRF tokens где needed
@@ -518,6 +529,7 @@ git push origin feature/feature-name
 ## ✅린ТИНГ И ФОРМАТИРОВАНИЕ
 
 ### .eslintrc.json
+
 ```json
 {
   "extends": [
@@ -541,6 +553,7 @@ git push origin feature/feature-name
 ```
 
 ### .prettierrc
+
 ```json
 {
   "semi": true,
@@ -554,6 +567,7 @@ git push origin feature/feature-name
 ```
 
 ### package.json scripts
+
 ```json
 {
   "scripts": {
@@ -597,13 +611,14 @@ git push origin feature/feature-name
 ❌ No tests written  
 ❌ Hardcoded secrets/passwords  
 ❌ No code review  
-❌ Merge conflicts not resolved properly  
+❌ Merge conflicts not resolved properly
 
 ---
 
 ## ✨ SUMMARY
 
 Этот чек-лист гарантирует:
+
 - ✅ Качественный, maintainable код
 - ✅ Хорошее performance
 - ✅ Security
