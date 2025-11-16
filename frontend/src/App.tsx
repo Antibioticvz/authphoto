@@ -168,11 +168,27 @@ function App() {
     }
 
     if (cameraError) {
+      const isHttpsError = cameraError.includes('not supported') || cameraError.includes('HTTPS');
+      
       return (
         <div className="error">
           <h2>❌ Camera Error</h2>
           <p>{cameraError}</p>
-          <button onClick={handleStart}>Try Again</button>
+          {isHttpsError && (
+            <div style={{ marginTop: '15px', padding: '15px', backgroundColor: '#fff3cd', borderRadius: '5px', textAlign: 'left' }}>
+              <h3 style={{ marginTop: 0 }}>💡 Solution:</h3>
+              <p>Camera access requires HTTPS when not on localhost.</p>
+              <ol style={{ marginLeft: '20px' }}>
+                <li>Stop the dev server</li>
+                <li>Run: <code style={{ padding: '2px 5px', backgroundColor: '#f0f0f0' }}>./generate-cert.sh</code></li>
+                <li>Restart dev server: <code style={{ padding: '2px 5px', backgroundColor: '#f0f0f0' }}>npm run dev</code></li>
+                <li>Access via HTTPS URL</li>
+                <li>Accept the self-signed certificate</li>
+              </ol>
+              <p>See <code>HTTPS_SETUP.md</code> for detailed instructions.</p>
+            </div>
+          )}
+          <button onClick={handleStart} style={{ marginTop: '15px' }}>Try Again</button>
         </div>
       )
     }

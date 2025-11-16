@@ -3,69 +3,104 @@
  * Hook for managing WebRTC camera access
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react"
 
 interface UseCameraReturn {
-  videoRef: React.RefObject<HTMLVideoElement | null>;
-  stream: MediaStream | null;
-  error: string | null;
-  isLoading: boolean;
-  startCamera: () => Promise<void>;
-  stopCamera: () => void;
+  videoRef: React.RefObject<HTMLVideoElement | null>
+  stream: MediaStream | null
+  error: string | null
+  isLoading: boolean
+  startCamera: () => Promise<void>
+  stopCamera: () => void
 }
 
 export function useCamera(): UseCameraReturn {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [stream, setStream] = useState<MediaStream | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [stream, setStream] = useState<MediaStream | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const startCamera = async () => {
-    setIsLoading(true);
-    setError(null);
+    setIsLoading(true)
+    setError(null)
 
     try {
+      // Check if getUserMedia is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error(
+          "Camera API not supported. Please use HTTPS or localhost."
+        )
+      }
+
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 1280 },
           height: { ideal: 720 },
-          facingMode: 'user',
+          facingMode: "user",
         },
         audio: false,
-      });
+      })
 
-      setStream(mediaStream);
+      setStream(mediaStream)
 
       if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        await videoRef.current.play();
+        videoRef.current.srcObject = mediaStream
+
+        // Wait for metadata to load before playing
+        await new Promise<void>((resolve, reject) => {
+          if (!videoRef.current) {
+            reject(new Error("Video element not found"))
+            return
+          }
+
+          const video = videoRef.current
+
+          const onLoadedMetadata = () => {
+            video.removeEventListener("loadedmetadata", onLoadedMetadata)
+            video.removeEventListener("error", onError)
+            resolve()
+          }
+
+          const onError = () => {
+            video.removeEventListener("loadedmetadata", onLoadedMetadata)
+            video.removeEventListener("error", onError)
+            reject(new Error("Failed to load video"))
+          }
+
+          video.addEventListener("loadedmetadata", onLoadedMetadata)
+          video.addEventListener("error", onError)
+        })
+
+        // Now play the video
+        await videoRef.current.play()
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to access camera';
-      setError(errorMessage);
-      console.error('Camera error:', err);
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to access camera"
+      setError(errorMessage)
+      console.error("Camera error:", err)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const stopCamera = () => {
     if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      setStream(null);
+      stream.getTracks().forEach(track => track.stop())
+      setStream(null)
     }
 
     if (videoRef.current) {
-      videoRef.current.srcObject = null;
+      videoRef.current.srcObject = null
     }
-  };
+  }
 
   useEffect(() => {
     return () => {
-      stopCamera();
-    };
+      stopCamera()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   return {
     videoRef,
@@ -74,5 +109,5 @@ export function useCamera(): UseCameraReturn {
     isLoading,
     startCamera,
     stopCamera,
-  };
+  }
 }
