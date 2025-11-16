@@ -1,4 +1,5 @@
 # Разбор проекта на задачи разработки
+
 ## AuthPhoto MVP — Полный план с GitHub Issues
 
 **Версия:** 1.0  
@@ -34,6 +35,7 @@ WEEK 3: Optimization & Polish
 ### WEEK 1.1: Project Setup & Architecture (2 дня)
 
 #### Task 1.1.1: NestJS Project Initialization
+
 **Priority:** 🔴 CRITICAL  
 **Assigned:** Backend Lead  
 **Depends on:** None  
@@ -41,6 +43,7 @@ WEEK 3: Optimization & Polish
 **Status:** Not Started
 
 **Description:**
+
 - Initialize NestJS project with TypeScript strict mode
 - Setup .env configuration
 - Setup development & production environments
@@ -49,6 +52,7 @@ WEEK 3: Optimization & Polish
 - Configure package.json scripts
 
 **Acceptance Criteria:**
+
 - ✅ `npm run dev` запускает сервер на localhost:3000
 - ✅ TypeScript strict mode enabled
 - ✅ ESLint passing without warnings
@@ -56,6 +60,7 @@ WEEK 3: Optimization & Polish
 - ✅ Health check endpoint работает: GET /api/v1/health
 
 **Files to create:**
+
 ```
 backend/
 ├── src/
@@ -77,6 +82,7 @@ backend/
 ---
 
 #### Task 1.1.2: Shared Services & Utilities
+
 **Priority:** 🔴 CRITICAL  
 **Assigned:** Backend Lead  
 **Depends on:** 1.1.1  
@@ -84,6 +90,7 @@ backend/
 **Status:** Not Started
 
 **Description:**
+
 - CryptoService (SHA-256 hashing, UUID generation, nonce generation)
 - LoggerService (structured logging)
 - CacheService (in-memory cache with TTL)
@@ -92,6 +99,7 @@ backend/
 - Global response interceptor
 
 **Acceptance Criteria:**
+
 - ✅ CryptoService generates valid SHA-256 hashes
 - ✅ LoggerService outputs structured JSON logs
 - ✅ CacheService TTL works correctly
@@ -99,6 +107,7 @@ backend/
 - ✅ All 4 services fully typed with TypeScript
 
 **Files to create:**
+
 ```
 src/
 ├── shared/
@@ -136,6 +145,7 @@ src/
 ### WEEK 1.2: Challenge Service Development (2 дня)
 
 #### Task 1.2.1: Challenge Module & Service
+
 **Priority:** 🔴 CRITICAL  
 **Assigned:** Backend Lead  
 **Depends on:** 1.1.2  
@@ -143,6 +153,7 @@ src/
 **Status:** Not Started
 
 **Description:**
+
 - Create ChallengeModule
 - Implement ChallengeService (business logic)
   - `generateChallenge()` - create random polygons + nonce
@@ -153,6 +164,7 @@ src/
 - Event/Observer pattern for challenge lifecycle
 
 **Acceptance Criteria:**
+
 - ✅ Challenge generated with unique ID, nonce, 5-7 polygons
 - ✅ Challenge expires after 30 seconds
 - ✅ Cannot use same challenge twice
@@ -160,18 +172,20 @@ src/
 - ✅ Unit tests: 90%+ coverage
 
 **Code outline:**
+
 ```typescript
 // src/modules/challenge/challenge.service.ts
 @Injectable()
 export class ChallengeService {
-  generateChallenge(clientId: string): Challenge;
-  validateChallenge(challengeId: string): Promise<Challenge>;
-  markChallengeAsUsed(challengeId: string): Promise<void>;
-  private generateRandomPolygons(): Polygon[];
+  generateChallenge(clientId: string): Challenge
+  validateChallenge(challengeId: string): Promise<Challenge>
+  markChallengeAsUsed(challengeId: string): Promise<void>
+  private generateRandomPolygons(): Polygon[]
 }
 ```
 
 **Files to create:**
+
 ```
 src/modules/challenge/
 ├── challenge.module.ts
@@ -192,6 +206,7 @@ src/modules/challenge/
 ---
 
 #### Task 1.2.2: Challenge Controller & API
+
 **Priority:** 🔴 CRITICAL  
 **Assigned:** Backend Lead  
 **Depends on:** 1.2.1  
@@ -199,6 +214,7 @@ src/modules/challenge/
 **Status:** Not Started
 
 **Description:**
+
 - Create ChallengeController with GET /challenge endpoint
 - Input validation (clientId parameter)
 - Response mapping to DTO
@@ -207,6 +223,7 @@ src/modules/challenge/
 - Swagger/OpenAPI documentation
 
 **Acceptance Criteria:**
+
 - ✅ GET /api/v1/challenge?clientId=test returns 200
 - ✅ Response format matches API spec
 - ✅ Rate limiting works (max 10 req/min per clientId)
@@ -214,6 +231,7 @@ src/modules/challenge/
 - ✅ Response time < 200ms
 
 **API Response example:**
+
 ```json
 {
   "status": "success",
@@ -231,6 +249,7 @@ src/modules/challenge/
 ```
 
 **Files to create/modify:**
+
 ```
 src/modules/challenge/
 ├── challenge.controller.ts (new)
@@ -245,6 +264,7 @@ src/modules/challenge/
 ---
 
 #### Task 1.2.3: Capture & Verification Services
+
 **Priority:** 🟠 HIGH  
 **Assigned:** Backend Lead  
 **Depends on:** 1.2.1  
@@ -252,6 +272,7 @@ src/modules/challenge/
 **Status:** Not Started
 
 **Description:**
+
 - Create CaptureModule & CaptureService
   - `capturePhoto()` - validate & store photo
   - `verifyPhoto()` - compare video hash with challenge nonce
@@ -263,6 +284,7 @@ src/modules/challenge/
 - Error handling for fraud attempts
 
 **Acceptance Criteria:**
+
 - ✅ Photo stored with correct hash validation
 - ✅ Invalid video hash rejects upload (returns 400)
 - ✅ Photo metadata retrievable by ID
@@ -270,7 +292,9 @@ src/modules/challenge/
 - ✅ Unit tests: 80%+ coverage
 
 **Algorithms:**
+
 1. **Video Hash Validation:**
+
    - Client records video during 2-second capture window
    - Server recalculates expected hash from nonce
    - Compares: `SHA256(video_frames) === challenge.hash`
@@ -282,6 +306,7 @@ src/modules/challenge/
    - Include: timestamp, clientId, message, hash, status
 
 **Files to create:**
+
 ```
 src/modules/capture/
 ├── capture.module.ts
@@ -319,6 +344,7 @@ src/modules/storage/
 ### WEEK 1.3: Testing & Documentation (1 день)
 
 #### Task 1.3.1: Unit Tests for Backend Services
+
 **Priority:** 🟠 HIGH  
 **Assigned:** Backend Lead  
 **Depends on:** 1.2.3  
@@ -326,6 +352,7 @@ src/modules/storage/
 **Status:** Not Started
 
 **Description:**
+
 - Write unit tests for all services (Jest)
 - Mock external dependencies
 - Test happy paths + error cases
@@ -333,12 +360,14 @@ src/modules/storage/
 - Test data factories
 
 **Test coverage:**
+
 - CryptoService: 100% (10 tests)
 - ChallengeService: 90% (15 tests)
 - CaptureService: 85% (12 tests)
 - VerificationService: 80% (10 tests)
 
 **Acceptance Criteria:**
+
 - ✅ `npm run test` passes all tests
 - ✅ Coverage report: 80%+ overall
 - ✅ No skipped tests (.skip)
@@ -346,6 +375,7 @@ src/modules/storage/
 - ✅ CI/CD pipeline configured
 
 **Files to create:**
+
 ```
 src/**/__tests__/
 ├── *.spec.ts (for each service)
@@ -360,6 +390,7 @@ src/**/__tests__/
 ---
 
 #### Task 1.3.2: API Documentation & Swagger
+
 **Priority:** 🟡 MEDIUM  
 **Assigned:** Backend Lead  
 **Depends on:** 1.2.2, 1.2.3  
@@ -367,6 +398,7 @@ src/**/__tests__/
 **Status:** Not Started
 
 **Description:**
+
 - Setup Swagger/OpenAPI documentation
 - Document all 3 endpoints:
   - GET /api/v1/challenge
@@ -376,12 +408,14 @@ src/**/__tests__/
 - Add error codes documentation
 
 **Acceptance Criteria:**
+
 - ✅ Swagger UI accessible at /api/docs
 - ✅ All endpoints documented
 - ✅ Request/response examples included
 - ✅ Error codes documented (400, 404, 429, 500)
 
 **Files to create/modify:**
+
 ```
 src/
 ├── main.ts (add Swagger setup)
@@ -397,6 +431,7 @@ src/
 ### WEEK 2.1: Frontend Project Setup (1 день)
 
 #### Task 2.1.1: React + Vite Project Initialization
+
 **Priority:** 🔴 CRITICAL  
 **Assigned:** Frontend Lead  
 **Depends on:** None  
@@ -404,6 +439,7 @@ src/
 **Status:** Not Started
 
 **Description:**
+
 - Initialize React 18 + Vite + TypeScript project
 - Setup Tailwind CSS
 - Configure linting (ESLint + Prettier)
@@ -412,6 +448,7 @@ src/
 - Setup .env configuration
 
 **Acceptance Criteria:**
+
 - ✅ `npm run dev` starts dev server on localhost:5173
 - ✅ TypeScript strict mode enabled
 - ✅ Tailwind CSS working
@@ -419,6 +456,7 @@ src/
 - ✅ Vite HMR working (fast refresh)
 
 **Files to create:**
+
 ```
 frontend/
 ├── src/
@@ -441,6 +479,7 @@ frontend/
 ---
 
 #### Task 2.1.2: Shared Components & Utilities
+
 **Priority:** 🔴 CRITICAL  
 **Assigned:** Frontend Lead  
 **Depends on:** 2.1.1  
@@ -448,6 +487,7 @@ frontend/
 **Status:** Not Started
 
 **Description:**
+
 - Create folder structure (features, shared, pages, layouts)
 - Build reusable components:
   - Button
@@ -468,6 +508,7 @@ frontend/
   - useAsync
 
 **Acceptance Criteria:**
+
 - ✅ All shared components fully typed
 - ✅ Components work on mobile (44px touch targets)
 - ✅ Dark mode support
@@ -475,6 +516,7 @@ frontend/
 - ✅ Stories/documentation for components
 
 **Files to create:**
+
 ```
 src/shared/
 ├── components/
@@ -513,6 +555,7 @@ src/shared/
 ### WEEK 2.2: Camera & Capture Feature (2 дня)
 
 #### Task 2.2.1: Camera Component & Polygon Overlay
+
 **Priority:** 🔴 CRITICAL  
 **Assigned:** Frontend Lead  
 **Depends on:** 2.1.2  
@@ -520,6 +563,7 @@ src/shared/
 **Status:** Not Started
 
 **Description:**
+
 - Create CameraCapture component
   - Access device camera (getUserMedia)
   - Display live video stream
@@ -535,6 +579,7 @@ src/shared/
 - Mobile-friendly (full screen, portrait mode)
 
 **Acceptance Criteria:**
+
 - ✅ Camera streams live video
 - ✅ Polygons render correctly on canvas
 - ✅ Works on iOS Safari & Android Chrome
@@ -543,18 +588,23 @@ src/shared/
 - ✅ No console errors
 
 **Code outline:**
+
 ```typescript
 // src/features/camera/components/CameraCapture.tsx
-export const CameraCapture: React.FC<CameraCaptureProps> = ({ clientId, onCapture }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { initCamera, takePhoto, captureVideo } = useCamera(videoRef, canvasRef);
-  const { challenge, drawPolygons } = useChallengePolygons(clientId);
+export const CameraCapture: React.FC<CameraCaptureProps> = ({
+  clientId,
+  onCapture,
+}) => {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const { initCamera, takePhoto, captureVideo } = useCamera(videoRef, canvasRef)
+  const { challenge, drawPolygons } = useChallengePolygons(clientId)
   // Implementation
-};
+}
 ```
 
 **Files to create:**
+
 ```
 src/features/camera/
 ├── components/
@@ -578,6 +628,7 @@ src/features/camera/
 ---
 
 #### Task 2.2.2: Photo Capture & Upload
+
 **Priority:** 🔴 CRITICAL  
 **Assigned:** Frontend Lead  
 **Depends on:** 2.2.1  
@@ -585,6 +636,7 @@ src/features/camera/
 **Status:** Not Started
 
 **Description:**
+
 - Capture photo from video stream
 - Compress/optimize photo before upload
 - Capture 2-second video for verification
@@ -594,6 +646,7 @@ src/features/camera/
 - Store challenge locally during upload
 
 **Technical:**
+
 - Canvas -> JPEG blob (quality 0.85)
 - Video recording from canvas (2 seconds, 30fps)
 - MultipartFormData POST with files
@@ -601,6 +654,7 @@ src/features/camera/
 - Rate limiting (prevent spam)
 
 **Acceptance Criteria:**
+
 - ✅ Photo captured and uploaded successfully
 - ✅ Video hash calculated correctly
 - ✅ Upload progress shown to user
@@ -609,6 +663,7 @@ src/features/camera/
 - ✅ Response time < 5 seconds
 
 **Code outline:**
+
 ```typescript
 // src/features/camera/services/captureService.ts
 export const capturePhoto = async (
@@ -617,14 +672,15 @@ export const capturePhoto = async (
   message: string,
   challenge: Challenge
 ): Promise<CaptureResult> => {
-  const photo = await extractAndCompress(canvas);
-  const videoHash = await calculateHash(video);
-  const formData = new FormData();
+  const photo = await extractAndCompress(canvas)
+  const videoHash = await calculateHash(video)
+  const formData = new FormData()
   // Upload
-};
+}
 ```
 
 **Files to create:**
+
 ```
 src/features/camera/
 ├── services/
@@ -644,6 +700,7 @@ src/features/camera/
 ### WEEK 2.3: Integration & Testing (1 день)
 
 #### Task 2.3.1: Frontend-Backend Integration
+
 **Priority:** 🔴 CRITICAL  
 **Assigned:** Full-Stack  
 **Depends on:** 1.2.2, 2.2.2  
@@ -651,6 +708,7 @@ src/features/camera/
 **Status:** Not Started
 
 **Description:**
+
 - Connect frontend API client to backend endpoints
 - Test GET /challenge flow
 - Test POST /capture flow with real backend
@@ -659,12 +717,14 @@ src/features/camera/
 - CORS configuration verification
 
 **Test scenarios:**
+
 1. ✅ Get challenge -> Display polygons -> Capture photo -> Upload -> Success
 2. ✅ Get challenge -> Wrong video hash -> Upload -> 400 error
 3. ✅ Network error during upload -> Retry -> Success
 4. ✅ Rate limit hit -> 429 error -> Show message
 
 **Files to modify:**
+
 ```
 src/shared/services/
 ├── api.ts (update endpoints)
@@ -676,6 +736,7 @@ src/shared/services/
 ---
 
 #### Task 2.3.2: Frontend Unit & Integration Tests
+
 **Priority:** 🟠 HIGH  
 **Assigned:** Frontend Lead  
 **Depends on:** 2.2.2  
@@ -683,6 +744,7 @@ src/shared/services/
 **Status:** Not Started
 
 **Description:**
+
 - Write unit tests for custom hooks
 - Write component tests (Vitest + React Testing Library)
 - Write integration tests for full flows
@@ -690,18 +752,21 @@ src/shared/services/
 - Aim for 70%+ coverage
 
 **Test coverage:**
+
 - useCamera hook: 90% (8 tests)
 - CameraCapture component: 80% (10 tests)
 - captureService: 85% (12 tests)
 - useChallengePolygons: 85% (8 tests)
 
 **Acceptance Criteria:**
+
 - ✅ `npm run test` passes all tests
 - ✅ Coverage > 70%
 - ✅ No flaky tests
 - ✅ Tests run < 10 seconds
 
 **Files to create:**
+
 ```
 src/features/camera/__tests__/
 ├── CameraCapture.test.tsx
@@ -715,6 +780,7 @@ src/features/camera/__tests__/
 ---
 
 #### Task 2.3.3: Result Display & Photo Verification
+
 **Priority:** 🟠 HIGH  
 **Assigned:** Frontend Lead  
 **Depends on:** 2.3.1  
@@ -722,6 +788,7 @@ src/features/camera/__tests__/
 **Status:** Not Started
 
 **Description:**
+
 - Create ResultScreen component
 - Display photo with verification status:
   - ✅ Verified & Authentic
@@ -733,12 +800,14 @@ src/features/camera/__tests__/
 - Copy/Share buttons
 
 **UI States:**
+
 1. Loading (spinner)
 2. Success (green checkmark, photo, metadata)
 3. Error (red X, error message, retry button)
 4. Share (copy link, QR code)
 
 **Files to create:**
+
 ```
 src/features/verification/
 ├── components/
@@ -762,6 +831,7 @@ src/features/verification/
 ### WEEK 3.1: Performance Optimization (1 день)
 
 #### Task 3.1.1: Bundle Size Optimization
+
 **Priority:** 🟠 HIGH  
 **Assigned:** Frontend Lead  
 **Depends on:** 2.3.3  
@@ -769,6 +839,7 @@ src/features/verification/
 **Status:** Not Started
 
 **Description:**
+
 - Analyze bundle size with `npm run analyze`
 - Code splitting (lazy load routes)
 - Tree shaking & dead code elimination
@@ -776,6 +847,7 @@ src/features/verification/
 - Target: < 200KB gzipped
 
 **Optimization checklist:**
+
 - [ ] Lazy load Result page
 - [ ] Tree shake unused utilities
 - [ ] Use dynamic imports for heavy libs
@@ -783,12 +855,14 @@ src/features/verification/
 - [ ] Remove dev dependencies from prod
 
 **Acceptance Criteria:**
+
 - ✅ Bundle size < 200KB gzipped
 - ✅ FCP < 2 seconds
 - ✅ LCP < 2.5 seconds
 - ✅ Lighthouse score > 90
 
 **Files to modify:**
+
 ```
 frontend/
 ├── vite.config.ts (chunking strategy)
@@ -801,6 +875,7 @@ frontend/
 ---
 
 #### Task 3.1.2: Backend Query Optimization & Caching
+
 **Priority:** 🟠 HIGH  
 **Assigned:** Backend Lead  
 **Depends on:** 1.3.1  
@@ -808,6 +883,7 @@ frontend/
 **Status:** Not Started
 
 **Description:**
+
 - Optimize ChallengeService queries
 - Add response caching (30 seconds)
 - Optimize photo retrieval
@@ -815,18 +891,21 @@ frontend/
 - Monitor response times
 
 **Optimization:**
+
 - Cache challenge lookups
 - Index cache by clientId
 - Remove unnecessary fields from responses
 - Compress JSON responses
 
 **Acceptance Criteria:**
+
 - ✅ GET /challenge response < 100ms
 - ✅ POST /capture response < 500ms
 - ✅ GET /photos/:id response < 200ms
 - ✅ P95 response time < 500ms
 
 **Files to modify:**
+
 ```
 src/
 ├── shared/services/cache.service.ts (optimize)
@@ -839,6 +918,7 @@ src/
 ---
 
 #### Task 3.1.3: Frontend Performance Metrics
+
 **Priority:** 🟡 MEDIUM  
 **Assigned:** Frontend Lead  
 **Depends on:** 2.3.3  
@@ -846,6 +926,7 @@ src/
 **Status:** Not Started
 
 **Description:**
+
 - Setup Core Web Vitals monitoring
 - Track FCP, LCP, CLS, FID
 - Add performance observer
@@ -853,6 +934,7 @@ src/
 - Send to monitoring service in prod (optional)
 
 **Metrics to track:**
+
 - First Contentful Paint (FCP)
 - Largest Contentful Paint (LCP)
 - Cumulative Layout Shift (CLS)
@@ -860,6 +942,7 @@ src/
 - Time to Interactive (TTI)
 
 **Files to create:**
+
 ```
 src/shared/utils/
 ├── performanceMonitoring.ts (new)
@@ -873,6 +956,7 @@ src/shared/utils/
 ### WEEK 3.2: Mobile Testing & Polish (1 день)
 
 #### Task 3.2.1: Mobile Device Testing
+
 **Priority:** 🟠 HIGH  
 **Assigned:** QA Lead or Frontend Lead  
 **Depends on:** 2.3.3  
@@ -880,6 +964,7 @@ src/shared/utils/
 **Status:** Not Started
 
 **Description:**
+
 - Test on real devices:
   - iPhone SE (4.7") - iOS 16+
   - iPhone 14 Pro (6.1") - iOS 17+
@@ -894,6 +979,7 @@ src/shared/utils/
   - Portrait/landscape rotation
 
 **Acceptance Criteria:**
+
 - ✅ Works on all tested devices
 - ✅ No console errors
 - ✅ Touch targets >= 44px
@@ -901,6 +987,7 @@ src/shared/utils/
 - ✅ Works offline (basic fallback)
 
 **Testing checklist:**
+
 - [ ] Portrait orientation works
 - [ ] Landscape orientation works
 - [ ] Notch/safe area respected
@@ -911,6 +998,7 @@ src/shared/utils/
 - [ ] No horizontal scrolling
 
 **Files to check:**
+
 ```
 src/
 ├── shared/styles/variables.css (safe area)
@@ -923,6 +1011,7 @@ src/
 ---
 
 #### Task 3.2.2: Polish UI/UX & Error Messages
+
 **Priority:** 🟡 MEDIUM  
 **Assigned:** Frontend Lead  
 **Depends on:** 2.3.3  
@@ -930,6 +1019,7 @@ src/
 **Status:** Not Started
 
 **Description:**
+
 - Improve loading states
 - Better error messages (user-friendly)
 - Add animations/transitions (respect prefers-reduced-motion)
@@ -938,6 +1028,7 @@ src/
 - Improve accessibility
 
 **UI Polish:**
+
 - Loading spinners
 - Skeleton screens
 - Toast notifications for feedback
@@ -946,6 +1037,7 @@ src/
 - Smooth transitions
 
 **Error Messages:**
+
 - "Camera not accessible - please check permissions"
 - "Network error - please try again"
 - "Upload failed - invalid video"
@@ -953,6 +1045,7 @@ src/
 - "Success! Photo authenticated"
 
 **Files to modify:**
+
 ```
 src/features/
 ├── camera/components/CameraCapture.module.css
@@ -966,6 +1059,7 @@ src/features/
 ### WEEK 3.3: Production Ready (1 день)
 
 #### Task 3.3.1: Security Audit & Hardening
+
 **Priority:** 🔴 CRITICAL  
 **Assigned:** Full-Stack  
 **Depends on:** All previous tasks  
@@ -973,6 +1067,7 @@ src/features/
 **Status:** Not Started
 
 **Description:**
+
 - Security audit checklist
 - Check for vulnerabilities
 - CORS configuration review
@@ -983,6 +1078,7 @@ src/features/
 - Secrets not in code
 
 **Security Checklist:**
+
 - [ ] No hardcoded API keys
 - [ ] CORS origin whitelist
 - [ ] Rate limiting enabled
@@ -995,6 +1091,7 @@ src/features/
 - [ ] No direct eval() or innerHTML
 
 **Files to audit:**
+
 ```
 backend/src/
 ├── main.ts (security headers)
@@ -1011,6 +1108,7 @@ frontend/src/
 ---
 
 #### Task 3.3.2: Documentation & Knowledge Transfer
+
 **Priority:** 🟠 HIGH  
 **Assigned:** Full-Stack  
 **Depends on:** All previous tasks  
@@ -1018,6 +1116,7 @@ frontend/src/
 **Status:** Not Started
 
 **Description:**
+
 - Update README.md with setup instructions
 - Add API documentation (Swagger link)
 - Document architecture decisions
@@ -1026,6 +1125,7 @@ frontend/src/
 - Add contributing guidelines
 
 **Documentation checklist:**
+
 - [ ] README.md complete
 - [ ] API docs (Swagger) accessible
 - [ ] Architecture documented
@@ -1035,6 +1135,7 @@ frontend/src/
 - [ ] Contributing guidelines clear
 
 **Files to create/update:**
+
 ```
 ├── README.md (update)
 ├── DEPLOYMENT.md (new)
@@ -1051,6 +1152,7 @@ frontend/src/
 ---
 
 #### Task 3.3.3: Staging Deployment & E2E Testing
+
 **Priority:** 🟠 HIGH  
 **Assigned:** DevOps / Full-Stack  
 **Depends on:** All previous tasks  
@@ -1058,6 +1160,7 @@ frontend/src/
 **Status:** Not Started
 
 **Description:**
+
 - Deploy to staging environment
 - Setup CI/CD pipeline (GitHub Actions)
 - Automated tests on PR
@@ -1067,6 +1170,7 @@ frontend/src/
 - Smoke tests
 
 **Deployment Checklist:**
+
 - [ ] Docker images build
 - [ ] docker-compose up works
 - [ ] Database migrations run
@@ -1077,11 +1181,13 @@ frontend/src/
 - [ ] No critical errors
 
 **CI/CD Pipeline:**
+
 1. On PR: Run linting, tests, build
 2. On merge: Deploy to staging
 3. Manual approval for production
 
 **Files to create:**
+
 ```
 .github/
 ├── workflows/
@@ -1097,30 +1203,30 @@ frontend/src/
 
 ## 📋 SUMMARY TABLE
 
-| Task | Priority | Est. Hours | Assigned | Status | Depends |
-|---|---|---|---|---|---|
-| 1.1.1 | 🔴 | 2.5 | Backend | ⬜ | - |
-| 1.1.2 | 🔴 | 3.5 | Backend | ⬜ | 1.1.1 |
-| 1.2.1 | 🔴 | 4.5 | Backend | ⬜ | 1.1.2 |
-| 1.2.2 | 🔴 | 2.5 | Backend | ⬜ | 1.2.1 |
-| 1.2.3 | 🟠 | 4.5 | Backend | ⬜ | 1.2.1 |
-| 1.3.1 | 🟠 | 3.5 | Backend | ⬜ | 1.2.3 |
-| 1.3.2 | 🟡 | 2 | Backend | ⬜ | 1.2.2, 1.2.3 |
-| 2.1.1 | 🔴 | 2.5 | Frontend | ⬜ | - |
-| 2.1.2 | 🔴 | 3.5 | Frontend | ⬜ | 2.1.1 |
-| 2.2.1 | 🔴 | 5.5 | Frontend | ⬜ | 2.1.2 |
-| 2.2.2 | 🔴 | 4.5 | Frontend | ⬜ | 2.2.1 |
-| 2.3.1 | 🔴 | 3.5 | Full-Stack | ⬜ | 1.2.2, 2.2.2 |
-| 2.3.2 | 🟠 | 3.5 | Frontend | ⬜ | 2.2.2 |
-| 2.3.3 | 🟠 | 2.5 | Frontend | ⬜ | 2.3.1 |
-| 3.1.1 | 🟠 | 2.5 | Frontend | ⬜ | 2.3.3 |
-| 3.1.2 | 🟠 | 2.5 | Backend | ⬜ | 1.3.1 |
-| 3.1.3 | 🟡 | 2 | Frontend | ⬜ | 2.3.3 |
-| 3.2.1 | 🟠 | 3.5 | QA/Frontend | ⬜ | 2.3.3 |
-| 3.2.2 | 🟡 | 2.5 | Frontend | ⬜ | 2.3.3 |
-| 3.3.1 | 🔴 | 2.5 | Full-Stack | ⬜ | All |
-| 3.3.2 | 🟠 | 2 | Full-Stack | ⬜ | All |
-| 3.3.3 | 🟠 | 3.5 | DevOps | ⬜ | All |
+| Task  | Priority | Est. Hours | Assigned    | Status | Depends      |
+| ----- | -------- | ---------- | ----------- | ------ | ------------ |
+| 1.1.1 | 🔴       | 2.5        | Backend     | ⬜     | -            |
+| 1.1.2 | 🔴       | 3.5        | Backend     | ⬜     | 1.1.1        |
+| 1.2.1 | 🔴       | 4.5        | Backend     | ⬜     | 1.1.2        |
+| 1.2.2 | 🔴       | 2.5        | Backend     | ⬜     | 1.2.1        |
+| 1.2.3 | 🟠       | 4.5        | Backend     | ⬜     | 1.2.1        |
+| 1.3.1 | 🟠       | 3.5        | Backend     | ⬜     | 1.2.3        |
+| 1.3.2 | 🟡       | 2          | Backend     | ⬜     | 1.2.2, 1.2.3 |
+| 2.1.1 | 🔴       | 2.5        | Frontend    | ⬜     | -            |
+| 2.1.2 | 🔴       | 3.5        | Frontend    | ⬜     | 2.1.1        |
+| 2.2.1 | 🔴       | 5.5        | Frontend    | ⬜     | 2.1.2        |
+| 2.2.2 | 🔴       | 4.5        | Frontend    | ⬜     | 2.2.1        |
+| 2.3.1 | 🔴       | 3.5        | Full-Stack  | ⬜     | 1.2.2, 2.2.2 |
+| 2.3.2 | 🟠       | 3.5        | Frontend    | ⬜     | 2.2.2        |
+| 2.3.3 | 🟠       | 2.5        | Frontend    | ⬜     | 2.3.1        |
+| 3.1.1 | 🟠       | 2.5        | Frontend    | ⬜     | 2.3.3        |
+| 3.1.2 | 🟠       | 2.5        | Backend     | ⬜     | 1.3.1        |
+| 3.1.3 | 🟡       | 2          | Frontend    | ⬜     | 2.3.3        |
+| 3.2.1 | 🟠       | 3.5        | QA/Frontend | ⬜     | 2.3.3        |
+| 3.2.2 | 🟡       | 2.5        | Frontend    | ⬜     | 2.3.3        |
+| 3.3.1 | 🔴       | 2.5        | Full-Stack  | ⬜     | All          |
+| 3.3.2 | 🟠       | 2          | Full-Stack  | ⬜     | All          |
+| 3.3.3 | 🟠       | 3.5        | DevOps      | ⬜     | All          |
 
 ---
 
@@ -1150,12 +1256,14 @@ Week 3 (Polish + Deploy):
 ## 🚀 HOW TO USE THIS PLAN
 
 ### For Project Managers
+
 - Create GitHub Issues from each task
 - Set milestones for Week 1, 2, 3
 - Track progress with Project board
 - Use this as estimation guide
 
 ### For Developers
+
 - Pick task from your priority queue
 - Read description & acceptance criteria
 - Follow code structure from "Files to create"
@@ -1163,6 +1271,7 @@ Week 3 (Polish + Deploy):
 - Complete checklist before pushing
 
 ### For Code Reviewers
+
 - Use BEST_PRACTICES_CHECKLIST.md for PR review
 - Check acceptance criteria are met
 - Verify related tests are passing

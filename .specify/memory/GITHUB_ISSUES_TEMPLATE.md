@@ -1,4 +1,5 @@
 # GitHub Issues Template — AuthPhoto
+
 ## Экспортируй эти issue в GitHub для отслеживания
 
 ---
@@ -6,6 +7,7 @@
 ## 📋 PHASE 1: BACKEND INFRASTRUCTURE
 
 ### Issue 1.1.1: NestJS Project Initialization
+
 ```
 Title: [Setup] Initialize NestJS project with TypeScript & Docker
 Labels: setup, backend, critical, week-1
@@ -38,6 +40,7 @@ Files to Create:
 ```
 
 ### Issue 1.1.2: Shared Services & Utilities
+
 ```
 Title: [Setup] Create shared services (Crypto, Logger, Cache, Config)
 Labels: setup, backend, critical, week-1
@@ -66,6 +69,7 @@ Tests:
 ```
 
 ### Issue 1.2.1: Challenge Service Implementation
+
 ```
 Title: [Feature] Implement Challenge Service with polygon generation
 Labels: feature, backend, critical, week-1
@@ -104,6 +108,7 @@ Related Patterns:
 ```
 
 ### Issue 1.2.2: Challenge Controller & API Endpoint
+
 ```
 Title: [Feature] Create GET /api/v1/challenge endpoint with rate limiting
 Labels: feature, backend, critical, week-1
@@ -144,6 +149,7 @@ Tests:
 ```
 
 ### Issue 1.2.3: Capture & Verification Services
+
 ```
 Title: [Feature] Implement photo capture, hash validation, and verification
 Labels: feature, backend, critical, week-1
@@ -194,6 +200,7 @@ Time Estimate: 4.5 hours
 ```
 
 ### Issue 1.3.1: Backend Unit Tests & Coverage
+
 ```
 Title: [Testing] Write unit tests for all backend services (80%+ coverage)
 Labels: testing, backend, high, week-1
@@ -228,6 +235,7 @@ Time Estimate: 3.5 hours
 ```
 
 ### Issue 1.3.2: API Documentation & Swagger Setup
+
 ```
 Title: [Documentation] Setup Swagger/OpenAPI with full endpoint documentation
 Labels: documentation, backend, medium, week-1
@@ -266,6 +274,7 @@ Time Estimate: 2 hours
 ## 🎨 PHASE 2: FRONTEND + INTEGRATION
 
 ### Issue 2.1.1: React + Vite Project Initialization
+
 ```
 Title: [Setup] Initialize React 18 + Vite + TypeScript + Tailwind
 Labels: setup, frontend, critical, week-2
@@ -294,6 +303,7 @@ Time Estimate: 2.5 hours
 ```
 
 ### Issue 2.1.2: Shared Components & Utilities Foundation
+
 ```
 Title: [Setup] Create shared components library and utility functions
 Labels: setup, frontend, critical, week-2
@@ -337,6 +347,7 @@ Time Estimate: 3.5 hours
 ```
 
 ### Issue 2.2.1: Camera Component with Polygon Overlay
+
 ```
 Title: [Feature] Build camera component with live polygon overlay
 Labels: feature, frontend, critical, week-2
@@ -384,6 +395,7 @@ Time Estimate: 5.5 hours
 ```
 
 ### Issue 2.2.2: Photo Capture & Upload with Video Hash
+
 ```
 Title: [Feature] Implement photo capture, compression, and server upload
 Labels: feature, frontend, critical, week-2
@@ -429,6 +441,7 @@ Time Estimate: 4.5 hours
 ```
 
 ### Issue 2.3.1: Frontend-Backend Integration Testing
+
 ```
 Title: [Integration] Connect frontend to backend and test full flow
 Labels: testing, integration, critical, week-2
@@ -477,6 +490,7 @@ Time Estimate: 3.5 hours
 ```
 
 ### Issue 2.3.2: Frontend Unit Tests (70%+ coverage)
+
 ```
 Title: [Testing] Write frontend unit and component tests
 Labels: testing, frontend, high, week-2
@@ -513,6 +527,7 @@ Time Estimate: 3.5 hours
 ```
 
 ### Issue 2.3.3: Result Screen & Photo Verification UI
+
 ```
 Title: [Feature] Build result screen showing verification status
 Labels: feature, frontend, high, week-2
@@ -561,6 +576,7 @@ Time Estimate: 2.5 hours
 ## ⚡ PHASE 3: OPTIMIZATION & POLISH
 
 ### Issue 3.1.1: Bundle Size Optimization
+
 ```
 Title: [Performance] Optimize bundle size to < 200KB gzipped
 Labels: performance, frontend, high, week-3
@@ -590,6 +606,7 @@ Time Estimate: 2.5 hours
 ```
 
 ### Issue 3.1.2: Backend Query & Response Optimization
+
 ```
 Title: [Performance] Optimize API responses and add caching
 Labels: performance, backend, high, week-3
@@ -625,6 +642,7 @@ Time Estimate: 2.5 hours
 ```
 
 ### Issue 3.2.1: Mobile Device Testing
+
 ```
 Title: [QA] Test on real devices (iPhone, Samsung, etc.)
 Labels: qa, testing, high, week-3
@@ -662,6 +680,7 @@ Time Estimate: 3.5 hours
 ```
 
 ### Issue 3.2.2: UI/UX Polish & Error Messages
+
 ```
 Title: [UX] Improve UI polish, animations, and error messages
 Labels: ux, frontend, medium, week-3
@@ -703,6 +722,7 @@ Time Estimate: 2.5 hours
 ```
 
 ### Issue 3.3.1: Security Audit & Hardening
+
 ```
 Title: [Security] Complete security audit and vulnerability check
 Labels: security, critical, week-3
@@ -742,6 +762,7 @@ Time Estimate: 2.5 hours
 ```
 
 ### Issue 3.3.2: Documentation & Knowledge Transfer
+
 ```
 Title: [Documentation] Complete all documentation for developers
 Labels: documentation, high, week-3
@@ -778,6 +799,7 @@ Time Estimate: 2 hours
 ```
 
 ### Issue 3.3.3: Staging Deployment & E2E Testing
+
 ```
 Title: [DevOps] Setup CI/CD pipeline and deploy to staging
 Labels: devops, high, week-3
@@ -826,6 +848,7 @@ Time Estimate: 3.5 hours
 ## 🎯 HOW TO IMPORT INTO GITHUB
 
 ### Option 1: Manual Creation
+
 1. Go to GitHub Issues
 2. Create new issue
 3. Copy content from above
@@ -833,6 +856,7 @@ Time Estimate: 3.5 hours
 5. Link issues with "Depends on" comments
 
 ### Option 2: Using CLI
+
 ```bash
 # Using GitHub CLI (gh)
 gh issue create --title "Issue Title" --body "Issue body" --label "label1,label2" --assignee @username
@@ -844,7 +868,9 @@ curl -X POST https://api.github.com/repos/USERNAME/REPO/issues \
 ```
 
 ### Option 3: Project Template
+
 Create GitHub Project with columns:
+
 - 📋 Backlog (all new issues)
 - 🔨 In Progress (assigned + started)
 - 👀 In Review (PR opened)
