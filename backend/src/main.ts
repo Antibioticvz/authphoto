@@ -13,8 +13,18 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   // Enable CORS
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'https://localhost:5173',
+    'https://192.168.100.4:5173',
+  ];
+  
+  if (process.env.CORS_ORIGIN) {
+    allowedOrigins.push(process.env.CORS_ORIGIN);
+  }
+
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true,
   });
 

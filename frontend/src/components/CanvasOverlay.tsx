@@ -12,6 +12,7 @@ interface CanvasOverlayProps {
   width: number;
   height: number;
   className?: string;
+  canvasRef?: React.RefObject<HTMLCanvasElement>;
 }
 
 export const CanvasOverlay: React.FC<CanvasOverlayProps> = ({
@@ -19,8 +20,10 @@ export const CanvasOverlay: React.FC<CanvasOverlayProps> = ({
   width,
   height,
   className = '',
+  canvasRef: externalCanvasRef,
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const internalCanvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = externalCanvasRef || internalCanvasRef;
   const animationFrameRef = useRef<number | undefined>(undefined);
   const startTimeRef = useRef<number | undefined>(undefined);
 

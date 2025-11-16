@@ -14,7 +14,7 @@ import {
 } from "./components"
 import { useCamera, useChallenge, useCapture } from "./hooks"
 import { cryptoService } from "./services"
-import { recordCanvasVideo, captureCanvasFrame } from "./utils"
+import { recordCanvasVideo, captureCanvasFrame, drawPolygon, applyAnimation } from "./utils"
 
 type AppState =
   | "idle"
@@ -66,6 +66,41 @@ function App() {
       start()
     }
   }, [state, requestChallenge, startCamera, clientId])
+
+  // Draw polygons to hidden overlay canvas for composite rendering
+  useEffect(() => {
+    if (!challenge || !overlayCanvasRef.current) return
+
+    const canvas = overlayCanvasRef.current
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const startTime = Date.now()
+    let animationFrameId: number
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime
+
+      // Clear canvas
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+
+      // Draw all polygons with animations
+      challenge.polygons.forEach(polygon => {
+        const animatedPolygon = applyAnimation(polygon, elapsed)
+        drawPolygon(ctx, animatedPolygon, canvasWidth, canvasHeight)
+      })
+
+      animationFrameId = requestAnimationFrame(animate)
+    }
+
+    animate()
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
+    }
+  }, [challenge, canvasWidth, canvasHeight])
 
   const handleStart = async () => {
     setState("requesting")
