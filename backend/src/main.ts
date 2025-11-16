@@ -16,6 +16,7 @@ async function bootstrap() {
   const allowedOrigins = [
     'http://localhost:5173',
     'https://localhost:5173',
+    'http://192.168.100.4:5173',
     'https://192.168.100.4:5173',
   ];
   
@@ -44,7 +45,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor());
 
   const port = process.env.PORT || 3000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0'); // Listen on all network interfaces
 
   logger.log(`🚀 Server is running on: http://localhost:${port}/api/v1`, 'Bootstrap');
   logger.log(`📋 Health check: http://localhost:${port}/api/v1/health`, 'Bootstrap');

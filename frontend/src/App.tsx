@@ -198,6 +198,7 @@ function App() {
         <div className="loading">
           <h2>🔄 Initializing...</h2>
           <p>Requesting challenge and starting camera...</p>
+          {state === "requesting" && <p style={{ fontSize: '12px', color: '#666' }}>Please wait...</p>}
         </div>
       )
     }
@@ -214,13 +215,11 @@ function App() {
               <h3 style={{ marginTop: 0 }}>💡 Solution:</h3>
               <p>Camera access requires HTTPS when not on localhost.</p>
               <ol style={{ marginLeft: '20px' }}>
-                <li>Stop the dev server</li>
-                <li>Run: <code style={{ padding: '2px 5px', backgroundColor: '#f0f0f0' }}>./generate-cert.sh</code></li>
-                <li>Restart dev server: <code style={{ padding: '2px 5px', backgroundColor: '#f0f0f0' }}>npm run dev</code></li>
-                <li>Access via HTTPS URL</li>
-                <li>Accept the self-signed certificate</li>
+                <li>Make sure you're accessing via HTTPS: <code>https://192.168.100.4:5173</code></li>
+                <li>Accept the self-signed certificate warning in your browser</li>
+                <li>Grant camera permission when prompted</li>
               </ol>
-              <p>See <code>HTTPS_SETUP.md</code> for detailed instructions.</p>
+              <p>Current URL: <code>{window.location.href}</code></p>
             </div>
           )}
           <button onClick={handleStart} style={{ marginTop: '15px' }}>Try Again</button>
@@ -233,6 +232,9 @@ function App() {
         <div className="error">
           <h2>❌ Challenge Error</h2>
           <p>{challengeError}</p>
+          <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
+            API URL: {import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}
+          </p>
           <button onClick={handleStart}>Try Again</button>
         </div>
       )

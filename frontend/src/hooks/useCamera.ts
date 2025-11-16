@@ -46,39 +46,61 @@ export function useCamera(): UseCameraReturn {
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream
 
-        // Wait for metadata to load before playing
-        await new Promise<void>((resolve, reject) => {
-          if (!videoRef.current) {
-            reject(new Error("Video element not found"))
-            return
+        // Wait for the video to be ready and play it
+        try {
+          // Wait for metadata
+          await new Promise<void>((resolve, reject) => {
+            if (!videoRef.current) {
+              reject(new Error("Video element not found"))
+              return
+            }
+
+            const video = videoRef.current
+
+            const onLoadedMetadata = () => {
+              video.removeEventListener("loadedmetadata", onLoadedMetadata)
+              video.removeEventListener("error", onError)
+              resolve()
+            }
+
+            const onError = (e: Event) => {
+              video.removeEventListener("loadedmetadata", onLoadedMetadata)
+              video.removeEventListener("error", onError)
+              console.error("Video element error:", e)
+              reject(new Error("Failed to load video metadata"))
+            }
+
+            // If already loaded, resolve immediately
+            if (video.readyState >= 1) {
+              resolve()
+              return
+            }
+
+            video.addEventListener("loadedmetadata", onLoadedMetadata)
+            video.addEventListener("error", onError)
+          })
+
+          // Now play the video
+          if (videoRef.current) {
+            await videoRef.current.play()
+            console.log("Camera started successfully")
           }
-
-          const video = videoRef.current
-
-          const onLoadedMetadata = () => {
-            video.removeEventListener("loadedmetadata", onLoadedMetadata)
-            video.removeEventListener("error", onError)
-            resolve()
-          }
-
-          const onError = () => {
-            video.removeEventListener("loadedmetadata", onLoadedMetadata)
-            video.removeEventListener("error", onError)
-            reject(new Error("Failed to load video"))
-          }
-
-          video.addEventListener("loadedmetadata", onLoadedMetadata)
-          video.addEventListener("error", onError)
-        })
-
-        // Now play the video
-        await videoRef.current.play()
+        } catch (playError) {
+          console.error("Failed to play video:", playError)
+          throw new Error("Failed to start video playback")
+        }
       }
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to access camera"
       setError(errorMessage)
       console.error("Camera error:", err)
+      
+      // Clean up stream on error
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop())
+        setStream(null)
+      }
     } finally {
       setIsLoading(false)
     }

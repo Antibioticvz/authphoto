@@ -24,15 +24,32 @@ export const Camera: React.FC<CameraProps> = ({
     const video = videoRef.current;
     if (!video) return;
 
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
+    const handlePlay = () => {
+      console.log('Camera: Video started playing');
+      setIsPlaying(true);
+    };
+    const handlePause = () => {
+      console.log('Camera: Video paused');
+      setIsPlaying(false);
+    };
+    const handleLoadedData = () => {
+      console.log('Camera: Video data loaded');
+    };
 
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
+    video.addEventListener('loadeddata', handleLoadedData);
+
+    // Check if already playing
+    if (!video.paused && !video.ended && video.readyState > 2) {
+      console.log('Camera: Video is already playing');
+      setIsPlaying(true);
+    }
 
     return () => {
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
+      video.removeEventListener('loadeddata', handleLoadedData);
     };
   }, [videoRef]);
 

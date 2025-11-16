@@ -9,12 +9,15 @@ const httpsConfig = (() => {
   const certPath = path.resolve(__dirname, '.cert/cert.pem')
   
   if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+    console.log('✅ HTTPS certificates found, using HTTPS')
     return {
       key: fs.readFileSync(keyPath),
       cert: fs.readFileSync(certPath),
     }
   }
   
+  console.warn('⚠️  No HTTPS certificates found. Camera will only work on localhost.')
+  console.warn('   Run ./generate-cert.sh to create certificates for network access.')
   return undefined
 })()
 
