@@ -6,17 +6,25 @@ import { CacheService } from '../../shared/services/cache.service';
 import { LoggerService } from '../../shared/services/logger.service';
 import { ConfigService } from '@nestjs/config';
 
+// Mock Multer File type
+type MockFile = {
+  buffer: Buffer;
+  originalname: string;
+  mimetype: string;
+  size: number;
+};
+
 describe('CaptureService', () => {
   let service: CaptureService;
   let challengeService: ChallengeService;
   let cryptoService: CryptoService;
 
-  const mockPhoto = {
+  const mockPhoto: MockFile = {
     buffer: Buffer.from('fake-image-data'),
     originalname: 'test.jpg',
     mimetype: 'image/jpeg',
     size: 1024,
-  } as Express.Multer.File;
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -82,13 +90,13 @@ describe('CaptureService', () => {
       const challenge1 = challengeService.createChallenge('test');
       const challenge2 = challengeService.createChallenge('test');
 
-      const result1 = await service.capturePhoto(mockPhoto, {
+      const result1 = await service.capturePhoto(mockPhoto as any, {
         challengeId: challenge1.challengeId,
         clientId: 'test',
         videoHash: 'a'.repeat(64),
       });
 
-      const result2 = await service.capturePhoto(mockPhoto, {
+      const result2 = await service.capturePhoto(mockPhoto as any, {
         challengeId: challenge2.challengeId,
         clientId: 'test',
         videoHash: 'b'.repeat(64),
@@ -258,7 +266,7 @@ describe('CaptureService', () => {
       const file = {
         mimetype: 'image/jpeg',
         size: 1024 * 1024, // 1MB
-      } as Express.Multer.File;
+      } as any;
 
       expect(() => service.validatePhotoFile(file)).not.toThrow();
     });
@@ -267,7 +275,7 @@ describe('CaptureService', () => {
       const file = {
         mimetype: 'image/png',
         size: 1024 * 1024,
-      } as Express.Multer.File;
+      } as any;
 
       expect(() => service.validatePhotoFile(file)).not.toThrow();
     });
@@ -276,7 +284,7 @@ describe('CaptureService', () => {
       const file = {
         mimetype: 'application/pdf',
         size: 1024,
-      } as Express.Multer.File;
+      } as any;
 
       expect(() => service.validatePhotoFile(file)).toThrow();
     });
@@ -285,7 +293,7 @@ describe('CaptureService', () => {
       const file = {
         mimetype: 'image/jpeg',
         size: 11 * 1024 * 1024, // 11MB
-      } as Express.Multer.File;
+      } as any;
 
       expect(() => service.validatePhotoFile(file)).toThrow();
     });
@@ -294,7 +302,7 @@ describe('CaptureService', () => {
       const file = {
         mimetype: 'image/jpeg',
         size: 0,
-      } as Express.Multer.File;
+      } as any;
 
       expect(() => service.validatePhotoFile(file)).toThrow();
     });

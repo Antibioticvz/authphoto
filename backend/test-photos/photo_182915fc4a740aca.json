@@ -1,0 +1,13 @@
+{
+  "photoId": "photo_182915fc4a740aca",
+  "challengeId": "6549cad2-3741-484c-8427-39136e88945d",
+  "clientId": "test",
+  "message": "Car damage on left wing",
+  "verified": true,
+  "videoHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "timestamp": "2025-11-16T15:55:20.520Z",
+  "filePath": "test-photos/photo_182915fc4a740aca.jpg",
+  "photoUrl": "http://localhost:3000/api/v1/photos/photo_182915fc4a740aca",
+  "fileSize": 1024,
+  "mimeType": "image/jpeg"
+}

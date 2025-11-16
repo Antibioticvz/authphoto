@@ -31,7 +31,7 @@ export class CaptureController {
   @Post()
   @UseInterceptors(FileInterceptor('photo'))
   async capturePhoto(
-    @UploadedFile() photo: Express.Multer.File,
+    @UploadedFile() photo: any,
     @Body() dto: CapturePhotoDto,
   ): Promise<CaptureResponseDto> {
     if (!photo) {
@@ -61,10 +61,7 @@ export class CaptureController {
    * GET /api/v1/capture/:photoId/file
    */
   @Get(':photoId/file')
-  async getPhotoFile(
-    @Param('photoId') photoId: string,
-    @Res() res: Response,
-  ) {
+  async getPhotoFile(@Param('photoId') photoId: string, @Res() res: Response) {
     const metadata = await this.captureService.getPhoto(photoId);
 
     if (!metadata) {
@@ -80,10 +77,7 @@ export class CaptureController {
       });
       res.send(fileBuffer);
     } catch (error) {
-      throw new HttpException(
-        'Failed to read photo file',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new HttpException('Failed to read photo file', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

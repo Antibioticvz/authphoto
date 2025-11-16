@@ -1,0 +1,13 @@
+{
+  "photoId": "photo_5447415b9791b1f3",
+  "challengeId": "bd804362-7b3f-492c-aee0-7a05d09d3d8b",
+  "clientId": "test",
+  "message": "",
+  "verified": true,
+  "videoHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "timestamp": "2025-11-16T15:56:43.738Z",
+  "filePath": "test-photos/photo_5447415b9791b1f3.jpg",
+  "photoUrl": "http://localhost:3000/api/v1/photos/photo_5447415b9791b1f3",
+  "fileSize": 1024,
+  "mimeType": "image/jpeg"
+}

@@ -36,10 +36,7 @@ export class CaptureService {
    * @param dto - Capture request data
    * @returns Capture response with verification result
    */
-  async capturePhoto(
-    photo: Express.Multer.File,
-    dto: CapturePhotoDto,
-  ): Promise<CaptureResponseDto> {
+  async capturePhoto(photo: any, dto: CapturePhotoDto): Promise<CaptureResponseDto> {
     // 1. Validate photo file
     this.validatePhotoFile(photo);
 
@@ -90,9 +87,7 @@ export class CaptureService {
     // 10. Delete used challenge
     this.challengeService.deleteChallenge(dto.challengeId);
 
-    this.loggerService.log(
-      `Photo captured: ${photoId} for client: ${dto.clientId}`,
-    );
+    this.loggerService.log(`Photo captured: ${photoId} for client: ${dto.clientId}`);
 
     // 11. Return response
     return {
@@ -126,9 +121,7 @@ export class CaptureService {
    * @returns Photo ID with format: photo_<16-hex-chars>
    */
   generatePhotoId(): string {
-    const randomPart = this.cryptoService
-      .generateNonce(8)
-      .substring(0, 16);
+    const randomPart = this.cryptoService.generateNonce(8).substring(0, 16);
     return `photo_${randomPart}`;
   }
 
@@ -137,7 +130,7 @@ export class CaptureService {
    * @param file - Uploaded file
    * @throws BadRequestException if file is invalid
    */
-  validatePhotoFile(file: Express.Multer.File): void {
+  validatePhotoFile(file: any): void {
     if (!file) {
       throw new BadRequestException('No photo file provided');
     }
@@ -154,9 +147,7 @@ export class CaptureService {
     // Check MIME type
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
     if (!allowedTypes.includes(file.mimetype)) {
-      throw new BadRequestException(
-        'Invalid photo format. Only JPEG and PNG are allowed',
-      );
+      throw new BadRequestException('Invalid photo format. Only JPEG and PNG are allowed');
     }
   }
 
@@ -169,10 +160,7 @@ export class CaptureService {
     this.photoMetadataCache.set(metadata.photoId, metadata);
 
     // Also save to disk as JSON
-    const metadataPath = path.join(
-      this.photosDir,
-      `${metadata.photoId}.json`,
-    );
+    const metadataPath = path.join(this.photosDir, `${metadata.photoId}.json`);
     await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
 
     this.loggerService.log(`Metadata saved for photo: ${metadata.photoId}`);

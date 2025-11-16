@@ -1,0 +1,13 @@
+{
+  "photoId": "photo_test123",
+  "challengeId": "challenge-123",
+  "clientId": "test-client",
+  "message": "Test",
+  "verified": true,
+  "videoHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "timestamp": "2025-11-16T15:56:43.727Z",
+  "filePath": "/test/photo.jpg",
+  "photoUrl": "http://test/photo.jpg",
+  "fileSize": 1024,
+  "mimeType": "image/jpeg"
+}

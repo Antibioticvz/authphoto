@@ -1,0 +1,13 @@
+{
+  "photoId": "photo_f8782391b4c04214",
+  "challengeId": "c28bbbce-e43d-48a7-8d30-e9802b0dce10",
+  "clientId": "insurance-corp",
+  "message": "Car damage photo",
+  "verified": true,
+  "videoHash": "718c1d62ec84a9bcce96dbdd6bd509cfaa4227a92196acae65544e7d69f3f745",
+  "timestamp": "2025-11-16T15:56:43.736Z",
+  "filePath": "test-photos/photo_f8782391b4c04214.jpg",
+  "photoUrl": "http://localhost:3000/api/v1/photos/photo_f8782391b4c04214",
+  "fileSize": 1024,
+  "mimeType": "image/jpeg"
+}
