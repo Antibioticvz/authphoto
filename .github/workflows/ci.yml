@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run linter
+        run: npm run lint
+      
+      - name: Run tests
+        run: npm run test
+      
+      - name: Build
+        run: npm run build
+  
+  spec-validation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Validate spec files
+        run: |
+          echo "Checking for required spec files..."
+          for spec_dir in specs/*/; do
+            if [ -d "$spec_dir" ]; then
+              echo "Validating $spec_dir"
+              if [ ! -f "${spec_dir}plan.md" ]; then
+                echo "::warning::Missing plan.md in $spec_dir"
+              fi
+              if [ ! -f "${spec_dir}tasks.md" ]; then
+                echo "::warning::Missing tasks.md in $spec_dir"
+              fi
+            fi
+          done
+      
+      - name: Check constitution compliance
+        run: |
+          if [ -f ".specify/memory/constitution.md" ]; then
+            echo "Constitution found ✓"
+          else
+            echo "::error::Constitution not found!"
+            exit 1
+          fi

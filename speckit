@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# SpecKit - Quick access to specification workflow
+# This is a convenience wrapper for .specify/scripts/bash/speckit-workflow.sh
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKFLOW_SCRIPT="$SCRIPT_DIR/.specify/scripts/bash/speckit-workflow.sh"
+
+# Check if workflow script exists
+if [ ! -f "$WORKFLOW_SCRIPT" ]; then
+    echo "Error: SpecKit workflow script not found at $WORKFLOW_SCRIPT"
+    exit 1
+fi
+
+# Forward all arguments to the workflow script
+exec "$WORKFLOW_SCRIPT" "$@"
