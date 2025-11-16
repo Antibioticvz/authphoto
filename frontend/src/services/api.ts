@@ -32,15 +32,26 @@ export class ApiClient {
     this.client = axios.create({
       baseURL: API_BASE_URL,
       timeout: 30000,
-      headers: {
-        "Content-Type": "application/json",
-      },
     })
 
     this.setupInterceptors()
   }
 
   private setupInterceptors(): void {
+    // Request interceptor: set Content-Type only for non-FormData requests
+    this.client.interceptors.request.use(config => {
+      if (!(config.data instanceof FormData)) {
+        if (!config.headers["Content-Type"]) {
+          config.headers["Content-Type"] = "application/json"
+        }
+      } else {
+        // Remove Content-Type for FormData to let browser set it with boundary
+        delete config.headers["Content-Type"]
+      }
+      return config
+    })
+
+    // Response interceptor
     this.client.interceptors.response.use(
       response => response,
       error => {

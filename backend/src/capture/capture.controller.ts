@@ -9,8 +9,6 @@ import {
   Res,
   UploadedFile,
   UseInterceptors,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
@@ -32,17 +30,13 @@ export class CaptureController {
    */
   @Post()
   @UseInterceptors(FileInterceptor('photo'))
-  @UsePipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: false,
-      transform: true,
-    }),
-  )
   async capturePhoto(
     @UploadedFile() photo: unknown,
     @Body() dto: CapturePhotoDto,
   ): Promise<CaptureResponseDto> {
+    console.log('🔍 CaptureController - Received file:', photo);
+    console.log('🔍 CaptureController - Received DTO:', dto);
+
     if (!photo) {
       throw new HttpException('Photo file is required', HttpStatus.BAD_REQUEST);
     }
