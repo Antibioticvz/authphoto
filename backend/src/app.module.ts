@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ChallengeModule } from './challenge/challenge.module';
+import { CaptureModule } from './capture/capture.module';
 import configuration from './config/configuration';
 import { SharedModule } from './shared/shared.module';
 
@@ -15,6 +16,7 @@ import { SharedModule } from './shared/shared.module';
     }),
     SharedModule,
     ChallengeModule,
+    CaptureModule,
   ],
   controllers: [AppController],
   providers: [AppService],

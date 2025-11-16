@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ChallengeService } from '../challenge.service';
-import { CryptoService } from '../../shared/services/crypto.service';
 import { CacheService } from '../../shared/services/cache.service';
+import { CryptoService } from '../../shared/services/crypto.service';
 import { LoggerService } from '../../shared/services/logger.service';
+import { ChallengeService } from '../challenge.service';
 
 describe('ChallengeService', () => {
   let service: ChallengeService;
