@@ -60,10 +60,14 @@ export function useChallenge(): UseChallengeReturn {
       const normalized = normalizeChallenge(response)
 
       if (isPreload) {
-        console.log("🔄 Preloaded next challenge:", normalized.challengeId)
+        if (import.meta.env.DEV) {
+          console.log("🔄 Preloaded next challenge:", normalized.challengeId)
+        }
         nextChallengeRef.current = normalized
       } else {
-        console.log("✅ Set current challenge:", normalized.challengeId)
+        if (import.meta.env.DEV) {
+          console.log("✅ Set current challenge:", normalized.challengeId)
+        }
         setChallenge(normalized)
         setupRotation(clientId, normalized)
       }
@@ -115,7 +119,9 @@ export function useChallenge(): UseChallengeReturn {
       return
     }
 
-    console.log(`⏰ Challenge TTL: ${Math.floor(ttl / 1000)}s`)
+    if (import.meta.env.DEV) {
+      console.log(`⏰ Challenge TTL: ${Math.floor(ttl / 1000)}s`)
+    }
 
     // Set initial countdown
     setTimeRemaining(Math.floor(ttl / 1000))
@@ -124,7 +130,9 @@ export function useChallenge(): UseChallengeReturn {
     // Preload next challenge 10 seconds before expiry (or immediately if less than 10s left)
     const preloadTime = Math.max(0, ttl - 10000)
     preloadTimerRef.current = window.setTimeout(() => {
-      console.log("🔄 Preloading next challenge...")
+      if (import.meta.env.DEV) {
+        console.log("🔄 Preloading next challenge...")
+      }
       fetchChallenge(clientId, true)
     }, preloadTime)
 
@@ -145,15 +153,19 @@ export function useChallenge(): UseChallengeReturn {
 
     // Rotate to next challenge when current expires
     rotationTimerRef.current = window.setTimeout(() => {
-      console.log("🔄 Rotating to next challenge...")
+      if (import.meta.env.DEV) {
+        console.log("🔄 Rotating to next challenge...")
+      }
 
       const preloadedChallenge = nextChallengeRef.current
 
       if (preloadedChallenge) {
-        console.log(
-          "✅ Using preloaded challenge:",
-          preloadedChallenge.challengeId
-        )
+        if (import.meta.env.DEV) {
+          console.log(
+            "✅ Using preloaded challenge:",
+            preloadedChallenge.challengeId
+          )
+        }
         setChallenge(preloadedChallenge)
         nextChallengeRef.current = null // Clear next challenge
         setupRotation(clientId, preloadedChallenge)
