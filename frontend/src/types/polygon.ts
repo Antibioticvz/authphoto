@@ -24,3 +24,17 @@ export interface PolygonRenderOptions {
   height: number;
   timestamp: number;
 }
+
+/**
+ * Backend API polygon format
+ * Matches the backend API contract for polygon data
+ */
+export interface BackendPolygon {
+  id: number | string;
+  points: [number, number][] | Point[];
+  color: string;
+  opacity: number;
+  animation: AnimationType;
+  duration?: number;
+  rotationCenter?: [number, number];
+}

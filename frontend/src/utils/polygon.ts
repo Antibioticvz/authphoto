@@ -3,42 +3,131 @@
  * Functions for polygon rendering on canvas
  */
 
-import type { Point, Polygon } from "../types"
+import type { Point, Polygon, BackendPolygon } from "../types"
 
-// Type for backend polygon format
-interface BackendPolygon {
-  id: number | string
-  points: [number, number][] | Point[]
-  color: string
-  opacity: number
-  animation: "pulse" | "rotate" | "fade" | "none"
-  duration?: number
-  rotationCenter?: [number, number]
+/**
+ * Validate if a value is a valid Point object
+ * @param value - Value to validate
+ * @returns true if valid Point object
+ */
+function isValidPoint(value: unknown): value is Point {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "x" in value &&
+    "y" in value &&
+    typeof (value as Point).x === "number" &&
+    typeof (value as Point).y === "number"
+  )
+}
+
+/**
+ * Validate if a value is a valid point tuple [x, y]
+ * @param value - Value to validate
+ * @returns true if valid tuple
+ */
+function isValidPointTuple(value: unknown): value is [number, number] {
+  return (
+    Array.isArray(value) &&
+    value.length === 2 &&
+    typeof value[0] === "number" &&
+    typeof value[1] === "number"
+  )
+}
+
+/**
+ * Validate backend polygon data structure
+ * @param data - Data to validate
+ * @returns true if data matches BackendPolygon interface
+ */
+function isValidBackendPolygon(data: unknown): data is BackendPolygon {
+  if (typeof data !== "object" || data === null) {
+    return false
+  }
+
+  const polygon = data as Record<string, unknown>
+
+  // Validate required fields
+  if (
+    (typeof polygon.id !== "number" && typeof polygon.id !== "string") ||
+    !Array.isArray(polygon.points) ||
+    typeof polygon.color !== "string" ||
+    typeof polygon.opacity !== "number" ||
+    typeof polygon.animation !== "string"
+  ) {
+    return false
+  }
+
+  // Validate animation type
+  const validAnimations = ["pulse", "rotate", "fade", "none"]
+  if (!validAnimations.includes(polygon.animation as string)) {
+    return false
+  }
+
+  // Validate points array - each point must be either a tuple or Point object
+  if (
+    !polygon.points.every(
+      (point: unknown) => isValidPointTuple(point) || isValidPoint(point)
+    )
+  ) {
+    return false
+  }
+
+  // Validate optional fields if present
+  if (
+    polygon.duration !== undefined &&
+    typeof polygon.duration !== "number"
+  ) {
+    return false
+  }
+
+  if (
+    polygon.rotationCenter !== undefined &&
+    !isValidPointTuple(polygon.rotationCenter)
+  ) {
+    return false
+  }
+
+  return true
 }
 
 /**
  * Convert backend polygon format (with tuple points) to frontend format (with Point objects)
  * @param backendPolygon - Polygon from backend API with [x, y] tuple points
  * @returns Normalized Polygon with Point objects
+ * @throws Error if backend polygon data is invalid
  */
-export function normalizePolygon(backendPolygon: BackendPolygon): Polygon {
-  // Handle both formats: array of tuples and array of objects
-  const points = backendPolygon.points.map(point => {
-    if (Array.isArray(point)) {
+export function normalizePolygon(backendPolygon: unknown): Polygon {
+  // Validate the input data
+  if (!isValidBackendPolygon(backendPolygon)) {
+    console.error("Invalid backend polygon data:", backendPolygon)
+    throw new Error(
+      "Invalid polygon data received from backend. Data does not match expected format."
+    )
+  }
+
+  // Convert points to Point objects with validation
+  const points = backendPolygon.points.map((point, index) => {
+    if (isValidPointTuple(point)) {
       return { x: point[0], y: point[1] }
+    } else if (isValidPoint(point)) {
+      return point
+    } else {
+      // This should never happen due to validation above, but handle gracefully
+      console.error(`Invalid point at index ${index}:`, point)
+      throw new Error(
+        `Invalid point data at index ${index}. Expected [x, y] tuple or {x, y} object.`
+      )
     }
-    return point as Point // Already an object with {x, y}
   })
 
   return {
-    id: String(backendPolygon.id) || "",
+    id: String(backendPolygon.id),
     points,
-    color: backendPolygon.color || "#FFFFFF",
-    opacity: backendPolygon.opacity ?? 1,
-    animation: backendPolygon.animation || "none",
-    animationSpeed: backendPolygon.duration
-      ? 1000 / backendPolygon.duration
-      : 1,
+    color: backendPolygon.color,
+    opacity: backendPolygon.opacity,
+    animation: backendPolygon.animation,
+    animationSpeed: backendPolygon.duration ? 1000 / backendPolygon.duration : 1,
   }
 }
 
