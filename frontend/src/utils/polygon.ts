@@ -199,8 +199,8 @@ export function drawPolygonOutline(
     y: point.y * height,
   }))
 
-  // Debug logging for first polygon
-  if (String(polygon.id) === "0") {
+  // Debug logging for first polygon (development only)
+  if (import.meta.env.DEV && String(polygon.id) === "0") {
     console.log("🎨 drawPolygonOutline - First polygon:", {
       polygonId: polygon.id,
       pointCount: polygon.points.length,
