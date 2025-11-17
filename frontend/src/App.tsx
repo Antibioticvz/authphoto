@@ -375,16 +375,7 @@ function App() {
           <div style={{ marginBottom: "10px" }}>
             <button
               onClick={() => setShowPolygonLines(!showPolygonLines)}
-              style={{
-                padding: "8px 16px",
-                backgroundColor: showPolygonLines ? "#4CAF50" : "#666",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "14px",
-                transition: "background-color 0.3s",
-              }}
+              className={`toggle-button ${showPolygonLines ? "active" : "inactive"}`}
             >
               {showPolygonLines ? "🔆 Hide Lines" : "🔅 Show Lines"} (Demo)
             </button>
