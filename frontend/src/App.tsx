@@ -375,6 +375,9 @@ function App() {
           <div style={{ marginBottom: "10px" }}>
             <button
               onClick={() => setShowPolygonLines(!showPolygonLines)}
+              aria-pressed={showPolygonLines}
+              aria-label={showPolygonLines ? "Hide polygon detection lines" : "Show polygon detection lines"}
+              title="Toggle polygon detection line visualization (demo mode)"
               style={{
                 padding: "8px 16px",
                 backgroundColor: showPolygonLines ? "#4CAF50" : "#666",
