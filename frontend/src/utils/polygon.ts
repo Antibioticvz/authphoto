@@ -23,14 +23,12 @@ interface BackendPolygon {
  */
 export function normalizePolygon(backendPolygon: BackendPolygon): Polygon {
   // Handle both formats: array of tuples and array of objects
-  const points = Array.isArray(backendPolygon.points)
-    ? backendPolygon.points.map(point => {
-        if (Array.isArray(point)) {
-          return { x: point[0], y: point[1] }
-        }
-        return point as Point // Already an object with {x, y}
-      })
-    : []
+  const points = backendPolygon.points.map(point => {
+    if (Array.isArray(point)) {
+      return { x: point[0], y: point[1] }
+    }
+    return point as Point // Already an object with {x, y}
+  })
 
   return {
     id: String(backendPolygon.id) || "",
