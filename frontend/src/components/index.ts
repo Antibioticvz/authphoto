@@ -8,3 +8,4 @@ export { CanvasOverlay } from './CanvasOverlay';
 export { CaptureButton } from './CaptureButton';
 export { MessageInput } from './MessageInput';
 export { ResultDisplay } from './ResultDisplay';
+export { PolygonLinesOverlay } from './PolygonLinesOverlay';

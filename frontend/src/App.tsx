@@ -11,6 +11,7 @@ import {
   CaptureButton,
   MessageInput,
   ResultDisplay,
+  PolygonLinesOverlay,
 } from "./components"
 import { useCamera, useCapture, useChallenge } from "./hooks"
 import { API_BASE_URL, cryptoService } from "./services"
@@ -54,6 +55,7 @@ function App() {
   const [clientId] = useState(() => cryptoService.generateClientId())
   const [videoHash, setVideoHash] = useState<string>("")
   const [isRedirecting, setIsRedirecting] = useState(false)
+  const [showPolygonLines, setShowPolygonLines] = useState(false)
 
   const {
     videoRef,
@@ -342,11 +344,19 @@ function App() {
             height={canvasHeight}
           />
           {challenge && polygons.length > 0 && (
-            <CanvasOverlay
-              polygons={polygons}
-              width={canvasWidth}
-              height={canvasHeight}
-            />
+            <>
+              <CanvasOverlay
+                polygons={polygons}
+                width={canvasWidth}
+                height={canvasHeight}
+              />
+              <PolygonLinesOverlay
+                polygons={polygons}
+                width={canvasWidth}
+                height={canvasHeight}
+                visible={showPolygonLines}
+              />
+            </>
           )}
           {/* Hidden canvas for overlay rendering */}
           <canvas
@@ -358,12 +368,37 @@ function App() {
         </div>
 
         <div className="controls" style={{ marginTop: "20px" }}>
+          {/* Toggle button for polygon lines */}
+          <div style={{ marginBottom: "10px" }}>
+            <button
+              onClick={() => setShowPolygonLines(!showPolygonLines)}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: showPolygonLines ? "#4CAF50" : "#666",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "14px",
+                transition: "background-color 0.3s",
+              }}
+            >
+              {showPolygonLines ? "🔆 Hide Lines" : "🔅 Show Lines"} (Demo)
+            </button>
+            <span style={{ marginLeft: "10px", fontSize: "12px", color: "#666" }}>
+              {showPolygonLines 
+                ? "Neon lines show how algorithm detects polygons" 
+                : "Toggle to see polygon detection lines"}
+            </span>
+          </div>
+
           <MessageInput
             value={message}
             onChange={setMessage}
             disabled={state !== "ready"}
             placeholder="Optional message..."
           />
+        </div>
         </div>
 
         <div className="actions" style={{ marginTop: "20px" }}>
