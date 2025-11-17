@@ -136,38 +136,33 @@ export function drawPolygonOutline(
     { width: 6, alpha: 0.5 },
   ]
 
-  glowLayers.forEach(layer => {
-    ctx.beginPath()
-    pixelPoints.forEach((point, index) => {
-      if (index === 0) {
-        ctx.moveTo(point.x, point.y)
-      } else {
-        ctx.lineTo(point.x, point.y)
-      }
-    })
-    ctx.closePath()
+  // Create the polygon path once using Path2D
+  const path = new Path2D()
+  pixelPoints.forEach((point, index) => {
+    if (index === 0) {
+      path.moveTo(point.x, point.y)
+    } else {
+      path.lineTo(point.x, point.y)
+    }
+  })
+  path.closePath()
 
+  glowLayers.forEach(layer => {
     ctx.strokeStyle = neonColor
     ctx.lineWidth = layer.width
     ctx.globalAlpha = layer.alpha * animatedOpacity
     ctx.shadowBlur = layer.width * 3
     ctx.shadowColor = neonColor
-    ctx.stroke()
+    ctx.stroke(path)
   })
 
   // Draw main line (brightest and thicker)
-  ctx.beginPath()
-  pixelPoints.forEach((point, index) => {
-    if (index === 0) {
-      ctx.moveTo(point.x, point.y)
-    } else {
-      ctx.lineTo(point.x, point.y)
-    }
-  })
-  ctx.closePath()
-
   ctx.strokeStyle = neonColor
   ctx.lineWidth = 4
+  ctx.globalAlpha = 1
+  ctx.shadowBlur = 0
+  ctx.shadowColor = "transparent"
+  ctx.stroke(path)
   ctx.globalAlpha = 1.0 // Full opacity for main line
   ctx.shadowBlur = 20
   ctx.shadowColor = neonColor
