@@ -74,9 +74,9 @@ export const PolygonLinesOverlay: React.FC<PolygonLinesOverlayProps> = ({
       // Clear canvas
       ctx.clearRect(0, 0, width, height)
 
-      // Calculate sine wave intensity (0.5 second period = 500ms)
-      const t = elapsed % 500 // 0-500ms cycle
-      const glowIntensity = Math.sin((2 * Math.PI * t) / 500)
+      // Calculate sine wave intensity (0.7 second period = 700ms)
+      const t = elapsed % 700 // 0-700ms cycle
+      const glowIntensity = Math.sin((2 * Math.PI * t) / 700)
 
       // Log only first frame for debugging
       if (frameCount === 0) {
