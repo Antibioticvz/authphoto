@@ -399,7 +399,6 @@ function App() {
             placeholder="Optional message..."
           />
         </div>
-        </div>
 
         <div className="actions" style={{ marginTop: "20px" }}>
           <CaptureButton
