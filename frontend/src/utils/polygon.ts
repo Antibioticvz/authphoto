@@ -202,7 +202,7 @@ function getNeonColor(color: string): string {
     return neonMap[lowerColor]
   }
 
-  // If color starts with #, check if it contains rgb/rgba
+  // If color is already in hex format, use it as-is
   if (color.startsWith("#")) {
     return color
   }
