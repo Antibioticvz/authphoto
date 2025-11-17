@@ -73,14 +73,14 @@ export function drawPolygonOutline(
   // Parse the color and create neon version
   const neonColor = getNeonColor(polygon.color);
   
-  // Apply sine wave animation to opacity
-  const animatedOpacity = 0.5 + 0.4 * glowIntensity;
+  // Apply sine wave animation to opacity (0.6 to 1.0 for better visibility)
+  const animatedOpacity = 0.6 + 0.4 * Math.abs(glowIntensity);
   
   // Draw outer glow (multiple layers for smooth effect)
   const glowLayers = [
-    { width: 8, alpha: 0.15 },
-    { width: 5, alpha: 0.25 },
-    { width: 3, alpha: 0.35 },
+    { width: 15, alpha: 0.2 },
+    { width: 10, alpha: 0.3 },
+    { width: 6, alpha: 0.5 },
   ];
   
   glowLayers.forEach(layer => {
@@ -97,12 +97,12 @@ export function drawPolygonOutline(
     ctx.strokeStyle = neonColor;
     ctx.lineWidth = layer.width;
     ctx.globalAlpha = layer.alpha * animatedOpacity;
-    ctx.shadowBlur = layer.width * 2;
+    ctx.shadowBlur = layer.width * 3;
     ctx.shadowColor = neonColor;
     ctx.stroke();
   });
   
-  // Draw main line (brightest)
+  // Draw main line (brightest and thicker)
   ctx.beginPath();
   pixelPoints.forEach((point, index) => {
     if (index === 0) {
@@ -114,9 +114,9 @@ export function drawPolygonOutline(
   ctx.closePath();
   
   ctx.strokeStyle = neonColor;
-  ctx.lineWidth = 2;
-  ctx.globalAlpha = 0.8 * animatedOpacity;
-  ctx.shadowBlur = 10;
+  ctx.lineWidth = 4;
+  ctx.globalAlpha = 1.0;  // Full opacity for main line
+  ctx.shadowBlur = 20;
   ctx.shadowColor = neonColor;
   ctx.stroke();
   
@@ -129,7 +129,7 @@ export function drawPolygonOutline(
  * @returns Neon version of the color
  */
 function getNeonColor(color: string): string {
-  // Map of common colors to neon equivalents
+  // Map of common colors to neon equivalents (very bright colors)
   const neonMap: Record<string, string> = {
     'red': '#FF0080',
     'green': '#00FF41',
@@ -139,20 +139,34 @@ function getNeonColor(color: string): string {
     'orange': '#FF6600',
     'pink': '#FF10F0',
     'cyan': '#00FFFF',
+    'white': '#FFFFFF',
+    'magenta': '#FF00FF',
   };
   
-  // Check if color is in the map
+  // Check if color is in the map (case-insensitive)
   const lowerColor = color.toLowerCase();
   if (neonMap[lowerColor]) {
     return neonMap[lowerColor];
   }
   
-  // If color starts with #, try to make it brighter
+  // If color starts with #, check if it contains rgb/rgba
   if (color.startsWith('#')) {
     return color;
   }
   
-  // Default to cyan neon
+  // Parse rgb/rgba format
+  if (color.includes('rgb')) {
+    // Extract RGB values and make them brighter
+    const match = color.match(/\d+/g);
+    if (match && match.length >= 3) {
+      const r = Math.min(255, parseInt(match[0]) * 1.5);
+      const g = Math.min(255, parseInt(match[1]) * 1.5);
+      const b = Math.min(255, parseInt(match[2]) * 1.5);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+  }
+  
+  // Default to bright cyan neon
   return '#00FFFF';
 }
 

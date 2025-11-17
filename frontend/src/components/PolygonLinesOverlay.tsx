@@ -45,12 +45,26 @@ export const PolygonLinesOverlay: React.FC<PolygonLinesOverlayProps> = ({
     }
 
     const canvas = canvasRef.current
-    if (!canvas) return
+    if (!canvas) {
+      console.warn('PolygonLinesOverlay: Canvas ref not available')
+      return
+    }
 
     const ctx = canvas.getContext("2d")
-    if (!ctx) return
+    if (!ctx) {
+      console.warn('PolygonLinesOverlay: Could not get 2D context')
+      return
+    }
+
+    console.log('✨ PolygonLinesOverlay: Starting animation', {
+      polygons: polygons.length,
+      width,
+      height,
+      visible
+    })
 
     startTimeRef.current = Date.now()
+    let frameCount = 0
 
     // Animation loop with sine wave effect
     const animate = () => {
@@ -64,11 +78,24 @@ export const PolygonLinesOverlay: React.FC<PolygonLinesOverlayProps> = ({
       const t = elapsed % 500 // 0-500ms cycle
       const glowIntensity = Math.sin((2 * Math.PI * t) / 500)
 
+      // Log only first frame for debugging
+      if (frameCount === 0) {
+        console.log('🎨 First frame:', {
+          elapsed,
+          glowIntensity,
+          polygonCount: polygons.length
+        })
+      }
+
       // Draw all polygon outlines with animated glow
-      polygons?.forEach(polygon => {
+      polygons?.forEach((polygon, idx) => {
+        if (frameCount === 0) {
+          console.log(`  └─ Polygon ${idx}:`, polygon.points.length, 'points, color:', polygon.color)
+        }
         drawPolygonOutline(ctx, polygon, width, height, glowIntensity)
       })
 
+      frameCount++
       animationFrameRef.current = requestAnimationFrame(animate)
     }
 
