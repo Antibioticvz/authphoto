@@ -1,2 +1,4 @@
 backend/test-photos
 backend/photos
+node_modules
+dist
