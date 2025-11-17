@@ -376,6 +376,9 @@ function App() {
             <button
               onClick={() => setShowPolygonLines(!showPolygonLines)}
               className={`toggle-button ${showPolygonLines ? "active" : "inactive"}`}
+              aria-pressed={showPolygonLines}
+              aria-label={showPolygonLines ? "Hide polygon detection lines" : "Show polygon detection lines"}
+              title="Toggle polygon detection line visualization (demo mode)"
             >
               {showPolygonLines ? "🔆 Hide Lines" : "🔅 Show Lines"} (Demo)
             </button>
