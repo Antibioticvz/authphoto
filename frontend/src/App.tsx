@@ -7,9 +7,9 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import "./App.css"
 import {
   Camera,
-  CanvasOverlay,
   CaptureButton,
   MessageInput,
+  PolygonLinesOverlay,
   ResultDisplay,
 } from "./components"
 import { useCamera, useCapture, useChallenge } from "./hooks"
@@ -54,6 +54,7 @@ function App() {
   const [clientId] = useState(() => cryptoService.generateClientId())
   const [videoHash, setVideoHash] = useState<string>("")
   const [isRedirecting, setIsRedirecting] = useState(false)
+  const [showPolygonLines, setShowPolygonLines] = useState(false)
 
   const {
     videoRef,
@@ -62,7 +63,13 @@ function App() {
     startCamera,
     stopCamera,
   } = useCamera()
-  const { challenge, error: challengeError, requestChallenge } = useChallenge()
+  const {
+    challenge,
+    error: challengeError,
+    timeRemaining,
+    isNearExpiry,
+    requestChallenge,
+  } = useChallenge()
   const { result, error: captureError, capturePhoto } = useCapture()
 
   const polygons = useMemo(() => challenge?.polygons ?? [], [challenge])
@@ -342,11 +349,17 @@ function App() {
             height={canvasHeight}
           />
           {challenge && polygons.length > 0 && (
-            <CanvasOverlay
-              polygons={polygons}
-              width={canvasWidth}
-              height={canvasHeight}
-            />
+            <>
+              {/* Demo mode: Show polygon detection lines */}
+              <PolygonLinesOverlay
+                polygons={polygons}
+                width={canvasWidth}
+                height={canvasHeight}
+                visible={showPolygonLines}
+              />
+              {/* Challenge polygons are always rendered to composite canvas for photo capture,
+                  but they are NOT shown in live preview to the user */}
+            </>
           )}
           {/* Hidden canvas for overlay rendering */}
           <canvas
@@ -358,6 +371,26 @@ function App() {
         </div>
 
         <div className="controls" style={{ marginTop: "20px" }}>
+          {/* Toggle button for polygon lines */}
+          <div style={{ marginBottom: "10px" }}>
+            <button
+              onClick={() => setShowPolygonLines(!showPolygonLines)}
+              className={`toggle-button ${showPolygonLines ? "active" : "inactive"}`}
+              aria-pressed={showPolygonLines}
+              aria-label={showPolygonLines ? "Hide polygon detection lines" : "Show polygon detection lines"}
+              title="Toggle polygon detection line visualization (demo mode)"
+            >
+              {showPolygonLines ? "🔆 Hide Lines" : "🔅 Show Lines"} (Demo)
+            </button>
+            <span
+              style={{ marginLeft: "10px", fontSize: "12px", color: "#666" }}
+            >
+              {showPolygonLines
+                ? "Neon lines show how algorithm detects polygons"
+                : "Toggle to see polygon detection lines"}
+            </span>
+          </div>
+
           <MessageInput
             value={message}
             onChange={setMessage}
@@ -366,16 +399,66 @@ function App() {
           />
         </div>
 
+        {/* Challenge countdown timer */}
+        {challenge && timeRemaining > 0 && (
+          <div
+            style={{
+              marginTop: "15px",
+              padding: "10px",
+              backgroundColor: isNearExpiry ? "#fff3cd" : "#d1ecf1",
+              borderRadius: "8px",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{ fontSize: "14px", color: "#666", marginBottom: "5px" }}
+            >
+              {isNearExpiry
+                ? "⚠️ Challenge expiring soon!"
+                : "⏰ Challenge expires in"}
+            </div>
+            <div
+              style={{
+                fontSize: "24px",
+                fontWeight: "bold",
+                color: isNearExpiry ? "#856404" : "#0c5460",
+              }}
+            >
+              {timeRemaining}s
+            </div>
+            {isNearExpiry && (
+              <div
+                style={{ fontSize: "12px", color: "#856404", marginTop: "5px" }}
+              >
+                New challenge will load automatically
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="actions" style={{ marginTop: "20px" }}>
           <CaptureButton
             onClick={handleCapture}
-            disabled={state !== "ready" || !challenge || !stream}
+            disabled={
+              state !== "ready" || !challenge || !stream || isNearExpiry // Block capture when challenge is about to expire
+            }
             isLoading={
               state === "recording" ||
               state === "capturing" ||
               state === "uploading"
             }
           />
+          {isNearExpiry && (
+            <p
+              style={{
+                marginTop: "10px",
+                fontSize: "13px",
+                color: "#856404",
+              }}
+            >
+              🔒 Capture blocked - Challenge refreshing soon...
+            </p>
+          )}
         </div>
 
         {state === "recording" && <p>🎥 Recording video...</p>}
