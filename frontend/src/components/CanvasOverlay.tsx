@@ -1,4 +1,4 @@
-/**
+/** NOT in use right now
  * CanvasOverlay Component
  * Canvas overlay for rendering polygons over camera
  */

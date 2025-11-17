@@ -3,7 +3,7 @@
  * Canvas overlay for rendering animated neon polygon lines for demonstration
  */
 
-import React, { useRef, useEffect } from "react"
+import React, { useEffect, useRef } from "react"
 import type { Polygon } from "../types"
 import { drawPolygonOutline } from "../utils"
 
@@ -32,7 +32,7 @@ export const PolygonLinesOverlay: React.FC<PolygonLinesOverlayProps> = ({
         cancelAnimationFrame(animationFrameRef.current)
         animationFrameRef.current = undefined
       }
-      
+
       // Clear canvas when hidden
       const canvas = canvasRef.current
       if (canvas) {
@@ -46,21 +46,21 @@ export const PolygonLinesOverlay: React.FC<PolygonLinesOverlayProps> = ({
 
     const canvas = canvasRef.current
     if (!canvas) {
-      console.warn('PolygonLinesOverlay: Canvas ref not available')
+      console.warn("PolygonLinesOverlay: Canvas ref not available")
       return
     }
 
     const ctx = canvas.getContext("2d")
     if (!ctx) {
-      console.warn('PolygonLinesOverlay: Could not get 2D context')
+      console.warn("PolygonLinesOverlay: Could not get 2D context")
       return
     }
 
-    console.log('✨ PolygonLinesOverlay: Starting animation', {
+    console.log("✨ PolygonLinesOverlay: Starting animation", {
       polygons: polygons.length,
       width,
       height,
-      visible
+      visible,
     })
 
     startTimeRef.current = Date.now()
@@ -80,17 +80,22 @@ export const PolygonLinesOverlay: React.FC<PolygonLinesOverlayProps> = ({
 
       // Log only first frame for debugging
       if (frameCount === 0) {
-        console.log('🎨 First frame:', {
+        console.log("🎨 First frame:", {
           elapsed,
           glowIntensity,
-          polygonCount: polygons.length
+          polygonCount: polygons.length,
         })
       }
 
       // Draw all polygon outlines with animated glow
       polygons?.forEach((polygon, idx) => {
         if (frameCount === 0) {
-          console.log(`  └─ Polygon ${idx}:`, polygon.points.length, 'points, color:', polygon.color)
+          console.log(
+            `  └─ Polygon ${idx}:`,
+            polygon.points.length,
+            "points, color:",
+            polygon.color
+          )
         }
         drawPolygonOutline(ctx, polygon, width, height, glowIntensity)
       })
@@ -124,6 +129,7 @@ export const PolygonLinesOverlay: React.FC<PolygonLinesOverlayProps> = ({
         left: 0,
         pointerEvents: "none",
         zIndex: 10,
+        display: visible ? "block" : "none",
       }}
     />
   )

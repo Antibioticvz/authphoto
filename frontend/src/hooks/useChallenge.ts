@@ -6,6 +6,7 @@
 import { useState } from "react"
 import { challengeService } from "../services"
 import type { ChallengeResponse } from "../types"
+import { normalizePolygon } from "../utils"
 
 interface UseChallengeReturn {
   challenge: ChallengeResponse | null
@@ -32,7 +33,9 @@ export function useChallenge(): UseChallengeReturn {
       // Normalize response: ensure polygons is array and expiresAt is a number
       const normalizedResponse: ChallengeResponse = {
         ...response,
-        polygons: Array.isArray(response.polygons) ? response.polygons : [],
+        polygons: Array.isArray(response.polygons)
+          ? response.polygons.map(p => normalizePolygon(p))
+          : [],
         expiresAt:
           typeof response.expiresAt === "string"
             ? parseInt(response.expiresAt, 10)
@@ -40,6 +43,10 @@ export function useChallenge(): UseChallengeReturn {
       }
 
       console.log("🔍 useChallenge - Normalized response:", normalizedResponse)
+      console.log(
+        "🔍 useChallenge - First polygon points:",
+        normalizedResponse.polygons[0]?.points
+      )
 
       if (!Array.isArray(response.polygons)) {
         console.warn(

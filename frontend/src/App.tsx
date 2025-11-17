@@ -7,11 +7,10 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import "./App.css"
 import {
   Camera,
-  CanvasOverlay,
   CaptureButton,
   MessageInput,
-  ResultDisplay,
   PolygonLinesOverlay,
+  ResultDisplay,
 } from "./components"
 import { useCamera, useCapture, useChallenge } from "./hooks"
 import { API_BASE_URL, cryptoService } from "./services"
@@ -345,17 +344,15 @@ function App() {
           />
           {challenge && polygons.length > 0 && (
             <>
-              <CanvasOverlay
-                polygons={polygons}
-                width={canvasWidth}
-                height={canvasHeight}
-              />
+              {/* Demo mode: Show polygon detection lines */}
               <PolygonLinesOverlay
                 polygons={polygons}
                 width={canvasWidth}
                 height={canvasHeight}
                 visible={showPolygonLines}
               />
+              {/* Challenge polygons are always rendered to composite canvas for photo capture,
+                  but they are NOT shown in live preview to the user */}
             </>
           )}
           {/* Hidden canvas for overlay rendering */}
@@ -385,9 +382,11 @@ function App() {
             >
               {showPolygonLines ? "🔆 Hide Lines" : "🔅 Show Lines"} (Demo)
             </button>
-            <span style={{ marginLeft: "10px", fontSize: "12px", color: "#666" }}>
-              {showPolygonLines 
-                ? "Neon lines show how algorithm detects polygons" 
+            <span
+              style={{ marginLeft: "10px", fontSize: "12px", color: "#666" }}
+            >
+              {showPolygonLines
+                ? "Neon lines show how algorithm detects polygons"
                 : "Toggle to see polygon detection lines"}
             </span>
           </div>
