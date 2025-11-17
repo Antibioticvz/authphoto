@@ -129,7 +129,7 @@ export const PolygonLinesOverlay: React.FC<PolygonLinesOverlayProps> = ({
         left: 0,
         pointerEvents: "none",
         zIndex: 10,
-        display: visible ? "block" : "none",
+        display: "block",
       }}
     />
   )
